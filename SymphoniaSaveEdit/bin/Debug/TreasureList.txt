@@ -1,0 +1,308 @@
+//305e
+//None
+//None
+Iselia Forest: Apple Gel #1
+Iselia Forest: Life Bottle
+Iselia Forest: Apple Gel #2
+Iselia Forest: Orange Gel #2
+Iselia Forest: Apple Gel #3
+Temple of Martel: Apple Gel
+//305f
+Temple of Martel: Life Bottle #2
+Temple of Martel: 250 Gald
+Temple of Martel: Life Bottle #1
+Temple of Martel: Panacea Bottle
+Iselia Forest: Leather Glove
+Triet Ruins: Apple Gel
+Triet Ruins: Lemon Gel
+Triet Ruins: Life Bottle
+//3060
+Triet Ruins: Bracelet
+Triet Ruins: Savory
+Triet Ruins: Circlet
+Triet Ruins: Stiletto
+Triet Ruins: Mumei
+Triet Ruins: 1000 Gald
+Ossa Trail: Battle Staff
+Ossa Trail: Melange Gel
+//3061
+Ossa Trail: Apple Gel
+Ossa Trail: Orange Gel
+Ossa Trail: Fine Guard
+Ossa Trail: Black Silver
+Ossa Trail: Beast Fang
+Ossa Trail: Ex Gem Lv1
+Thoda Geyser: Mermaid Tear
+Thoda Geyser: Circlet #1
+//3062
+Thoda Geyser: Life Bottle
+Thoda Geyser: Stun Bracelet
+Thoda Geyser: Circlet #2
+Thoda Geyser: White Silver
+Thoda Geyser: Orange Gel
+Thoda Geyser: Ex Gem Lv1
+Sylverant Base: Beast Hide #1
+Sylverant Base: Magical Cloth
+//3063
+Sylverant Base: Beast Hide #2
+Sylverant Base: 1500 Gald
+Balacruf Mausoleum: 1800 Gald
+Balacruf Mausoleum: Beast Fang
+Balacruf Mausoleum: Beast Hide
+Balacruf Mausoleum: Iron Guard
+Balacruf Mausoleum: Blue Ribbon #1
+Balacruf Mausoleum: Blue Ribbon #2
+//3064
+Balacruf Mausoleum: Ex Gem Lv2
+Palmacosta Ranch: White Silver
+Palmacosta Ranch: Omega Shield
+Palmacosta Ranch: Mage Cloak
+Palmacosta Ranch: Red Card
+Palmacosta Ranch: Orange Gel #3
+Palmacosta Ranch: Ex Gem Lv2
+Asgard Human Ranch: Beast Hide
+//3065
+Asgard Human Ranch: White Robe
+Asgard Human Ranch: Iron Bracelet
+Asgard Human Ranch: Card of Earth
+Asgard Human Ranch: Stun Charm
+Asgard Human Ranch: Lamellar Leather
+Asgard Human Ranch: Cleric's Hat
+Asgard Human Ranch: Pellets
+Asgard Human Ranch: Ex Gem Lv2
+//3066
+Tower of Mana: Iron Mail
+Tower of Mana: Ex Gem Lv2 #2
+Tower of Mana: Ex Gem Lv2 #1
+Tower of Mana: Lunar Guard
+Tower of Mana: Moon Robe
+Tower of Mana: Arnet Helm
+Tower of Mana: Stinger Ring
+Sylvarant Base 2: Ex Gem Lv2 #3 
+//3067
+Sylvarant Base 2: Straw Hat
+Sylvarant Base 2: Protect Ring
+Fooji Mountains: Card of Fire
+Fooji Mountains: Misty Robe
+Fooji Mountains: Black Onyx
+Fooji Mountains: Cool Orbit
+Fooji Mountains: Ex Gem Lv2
+Meltokio Sewers: Ex Gem Lv1
+//3068
+Meltokio Sewers: 2500 Gald
+Meltokio Sewers: Ex Gem Lv2
+Meltokio Sewers: Ex Gem Lv3
+Meltokio Sewers: Thunderbolt
+Meltokio Sewers: Card of Lightning
+Meltokio Sewers: Great Ax
+Meltokio Sewers: Breastplate
+Meltokio Sewers: Spirit Ring
+//3069
+Gaoracchia Forest: Phoenix Rod
+Gaoracchia Forest: Witch's Robe
+Gaoracchia Forest: Pretty Ribbon
+Gaoracchia Forest: Angel Bracelet
+Gaoracchia Forest: Drain Charm
+Toize Valley Mine: Saint Rapier
+Toize Valley Mine: Sand Saber
+Toize Valley Mine: Crescent Ax
+//306A
+Toize Valley Mine: Iron Greaves
+Toize Valley Mine: Silk Robe
+Toize Valley Mine: Thunder Cape
+Toize Valley Mine: Super Pellets
+Toize Valley Mine: Ex Gem Lv3
+Toize Valley Mine: Sage
+Toize Valley Mine: Ex Gem Lv1
+Temple of Earth: Bellabane
+//306B
+Temple of Earth: Ex Gem Lv1
+Temple of Earth: Ex Gem Lv2
+Temple of Earth: Ex Gem Lv3
+Temple of Earth: Ancient Rod
+Temple of Earth: Bardiche
+Temple of Earth: Ghost Shell
+Temple of Earth: Mythril Guard
+Temple of Earth: Mythril Bracelet
+//306C
+Temple of Earth: Mythril Circlet
+Temple of Ice: Defenser
+Temple of Ice: Ancient Robe
+Temple of Ice: Mythril Shield
+Temple of Ice: Ice Coffin
+Temple of Ice: Mythril Armor
+Temple of Ice: Mythril Gauntlet
+Temple of Ice: Rosemary
+//306D
+Temple of Ice: Ex Gem Lv2
+Temple of Ice: Ex Gem Lv3
+Remote Island Ranch: Saffron
+Remote Island Ranch: Ex Gem Lv1
+Remote Island Ranch: Ex Gem Lv2 #2
+Remote Island Ranch: Ex Gem Lv2 #1
+Remote Island Ranch: Ex Gem Lv3 #1
+Remote Island Ranch: Ex Gem Lv3 #2
+//306E
+Remote Island Ranch: Ex Gem Lv4
+Remote Island Ranch: Mythril Ax
+Remote Island Ranch: Mythril Greaves
+Remote Island Ranch: Holy Cloak
+Remote Island Ranch: Minazuki
+Remote Island Ranch: Revive Ring
+Remote Island Ranch: Stone Charm
+Iselia Human Ranch: Muramasa
+//306F
+Iselia Human Ranch: Solar Spinner
+Iselia Human Ranch: Rune Staff
+Iselia Human Ranch: Ether Sword
+Iselia Human Ranch: War Hammer
+Iselia Human Ranch: Aqua Greaves
+Iselia Human Ranch: Rune Mail
+Iselia Human Ranch: Rune Guard
+Iselia Human Ranch: Hairpin
+//3070
+Iselia Human Ranch: Rune Gauntlet
+Iselia Human Ranch: Rune Cloak
+Iselia Human Ranch: Rune Circlet
+Iselia Human Ranch: Rune Robe
+Iselia Human Ranch: Rune Shield
+Iselia Human Ranch: Lovely Mittens
+Temple of Darkness: Ex Gem Lv 2 #1
+Temple of Darkness: Ex Gem Lv 2 #2
+//3071
+Temple of Darkness: Ex Gem Lv 3
+Temple of Darkness: Ex Gem Lv 4
+Temple of Darkness: Shadow Dancer
+Temple of Darkness: Headband
+Ymir Forest: Resist Ring
+Ymir Forest: Crystal Shell
+Ymir Forest: Maid's Hairband
+Ymir Forest: Solar Guard
+//3072
+Ymir Forest: Gladius
+Latheon Gorge: Ex Gem Lv4 #1
+Latheon Gorge: Rare Pellets
+Latheon Gorge: Ex Gem Lv3 #1
+Latheon Gorge: Ex Gem Lv4 #3
+Latheon Gorge: Ex Gem Lv4 #2
+Latheon Gorge: Toroid
+Latheon Gorge: Ex Gem Lv3 #2
+//3073
+Latheon Gorge: Battle Pick
+Latheon Gorge: Flare Greaves
+Latheon Gorge: Draupnir
+Latheon Gorge: Star Cap
+Latheon Gorge: Rare Shield
+Welgaia: Laser Blade
+Welgaia: Nagazuki
+Welgaia: Dragon Fang
+//3074
+Welgaia: Rare Guard
+Welgaia: Holy Robe
+Welgaia: HOly Circlet
+Welgaia: Energy Tablets
+Welgaia: Ex Gem Lv2
+Welgaia: Ex Gem Lv3 #1
+Welgaia: Ex Gem Lv3 #2
+Welgaia: Ex Gem Lv4
+//3075
+Temple of Lightning: Ex Gem Lv2
+Temple of Lightning: Ex Gem Lv3 #2
+Temple of Lightning: Shining Star
+Temple of Lightning: Thunder Scepter
+Temple of Lightning: Power Greaves
+Temple of Lightning: Silver Guard
+Temple of Lightning: Battle Cloak
+Temple of Lightning: Duel Helm
+//3076
+Tethe'alla Base: Lavender
+Tethe'alla Base: Ex Gem Lv2
+Tethe'alla Base: Ex Gem Lv3 #2
+Tethe'alla Base: Dragon Tooth
+Tethe'alla Base: Lightning Sword
+Tethe'alla Base: Card of Ice
+Tethe'alla Base: Tomahawk Lance
+Tethe'alla Base: Silver Mail
+//3077
+Tethe'alla Base: Silver Circlet
+Tethe'alla Base: Beam Shield
+Tethe'alla Base: Aqua Cape
+Tower of Salvation: Diamond Shell
+Tower of Salvation: Ogre Ax
+Tower of Salvation: Hanuman's Staff
+Tower of Salvation: Southern Cross
+Tower of Salvation: Phoenix Cloak
+//3078
+Tower of Salvation: Heavenly Robe
+Tower of Salvation: Star Mail
+Tower of Salvation: Ex Gem Lv4 #1
+Tower of Salvation: Energy Tablets
+Tower of Salvation: Star Guard
+Tower of Salvation: Shaman Dress
+Tower of Salvation: Ex Gem Lv3 #1
+Tower of Salvation: Star Helm
+//3079
+Tower of Salvation: Star Shield
+Tower of Salvation: Star Circlet
+Tower of Salvation: Star Gauntlet
+Tower of Salvation: Ex Gem Lv3 #2
+Tower of Salvation: Ex Gem Lv2
+Tower of Salvation: Star Bracelet
+Tower of Salvation: Ex Gem Lv4 #2
+Tower of Salvation: Spirit Bottle
+//307A
+Palmacosta Ranch: Life Bottle #2
+Palmacosta Ranch: Panacea Bottle
+Palmacosta Ranch: Apple Gel #1
+Palmacosta Ranch: Orange Gel #1
+Palmacosta Ranch: Life Bottle #1
+Palmacosta Ranch: Organce Gel #2
+Iselia Human Ranch: Rune Helm
+Iselia Forest: Orange Gel #1
+//307B
+Iselia Forest: 500 Gald
+Palmacosta Ranch: Life Bottle #3
+Palmacosta Ranch: Apple Gel #2
+Palmacosta Ranch: Orange Gel #4
+Palmacosta Ranch: Melange Gel
+Iselia Human Ranch: Cor Leonis
+Remote Island Ranch: Holy Staff
+Remote Island Ranch: Vajra
+//307C
+Toize Valley Mine: Battlesuit
+Glitch
+Torent Forest: Stardust
+Torent Forest: Crystal Dagger
+Torent Forest: Acalanatha
+Torent Forest: Mana Protector
+Torent Forest: Warlock Garb
+Torent Forest: Shield Ring
+//307D
+Torent Forest: Ex Gem Lv4 #2
+Torent Forest: Ex Gem Lv3
+Torent Forest: Ex Gem Lv4 #1
+Torent Forest: Angel's Tear
+Derris Kharlan: Ex Gem Lv2
+Derris Kharlan: Ex Gem Lv3 #1
+Vinheim: Ninja Sword
+Derris Kharlan: Ex Gem Lv4 #2
+//307E
+Derris Kharlan: Ex Gem Lv3 #2
+Derris Kharlan: Golden Helm
+Derris Kharlan: Ex Gem Lv4 #1
+Derris Kharlan: Magical Ribbon
+Vinheim: Ex Gem Lv4
+Vinheim: Blue Shield
+Vinheim: Shield Ring
+Vinheim: Demon Seal
+//307F
+Vinheim: Elixir
+Vinheim: Spirit Bottle
+Vinheim: Energy Tablets
+Tethe'alla Base: Ex Gem Lv3 #1
+Temple of Lightning: Ex Gem Lv3 #1
+Temple of Lightning: Spirit Bottle
+Vinheim: Elemental Guard
+Vinheim: Prism Guard
+//3080
+Vinheim: Mortality Cloak

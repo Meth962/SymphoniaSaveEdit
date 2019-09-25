@@ -1,0 +1,10 @@
+6/20/2018
+	- Fixed the offset for PC saves and Affection
+	
+2/18/2018
+	- Still haven't tested this at all for PS3 or PC saves (Backup your saves). Please report any issues.
+
+Using Manual Edit
+-----------------
+Any number you see preceeded by "0x" is a hex number. Be sure to leave the "0x" when editing, and 
+remember to convert your number to hex.

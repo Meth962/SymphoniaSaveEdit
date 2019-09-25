@@ -1,0 +1,415 @@
+Techs
+==========================
+Lloyd = 07ffffffff
+------------------
+80=
+40=
+20=
+10=
+08=
+04=Falcon's Crest*
+02=Holy Guardian*
+01=Guardian
+
+80=Beast Sword Rain
+40=Raining Tiger Blade
+20=Tempest Beast
+10=Tempest Thrust
+08=Demonic Tiger Blade
+04=Demonic Thrust
+02=Aurora Slash
+01=Sonic Burst
+
+80=Final Justice
+40=Rising Falcon
+20=Hunting Beast
+10=Raging Beast
+08=Beast
+04=Psi Tempest
+02=Omega Tempest
+01=Tempest
+
+80=Sword Rain: Beta
+40=Sonic Sword Rain
+20=Sword Rain: Alpha
+10=Sword Rain
+08=Super Sonic Thrust
+04=Hurricane Thrust
+02=Sonic Thrust
+01=Twin Tiger Blade
+
+80=Heavy Tiger Blade
+40=Tiger Rage
+20=Tiger Blade
+10=Demonic Circle
+08=Demonic Chaos
+04=Fierce Demon Fang
+02=Double Demon Fang
+01=Demon Fang
+
+Colette = 00 0f8fafff
+---------------------
+80=
+40=-????-*
+20=Sephiroth*
+10=Grand Cross*
+08=Judgment
+04=Sacrifice
+02=Holy Song
+01=Angel Feathers
+
+80=Damage Guard
+40=Final Fury*
+20=Dancing Sickles*
+10=Mirage Saber*
+08=Stardust Cross
+04=Grand Fall
+02=Grand Chariot
+01=Item Rover
+
+80=Item Thief
+40=Listra*
+20=Whirlwind Rush
+10=Listra*
+08=Ring Cyclone
+04=Ring Whirlwind
+02=Torrential Para Ball
+01=Para Ball
+
+80=Hammer Rain
+40=Pow Pow Hammer
+20=Pow Hammer
+10=Triple Ray Satellite
+08=Ray Satellite
+04=Triple Ray Thrust
+02=Dual Ray Thrust
+01=Ray Thrust
+
+Genis = 09ffffffff
+------------------
+80=
+40=
+20=
+10=Indignation Judg.*
+08=Force Field
+04=Tetraspell*
+02=Divine Power*
+01=Meteor Storm
+
+80=Prism Sword
+40=Earth Bite
+20=Absolute
+10=Atlas
+08=Dreaded Wave
+04=Thunder Arrow
+02=Spiral Flare
+01=Gravity Well
+
+80=Raging Mist
+40=Freeze Lancer
+20=Ice Tornado
+10=Icicle
+08=Indignation
+04=Spark Wave
+02=Thunder Blade
+01=Lightning
+
+80=Ground Dasher
+40=Grave
+20=Stalagmite
+10=Stone Blast
+08=Cyclone
+04=Air Blade
+02=Air Thrust
+01=Wind Blade
+
+80=Explosion
+40=Flame Lance
+20=Eruption
+10=Fire Ball
+08=Tidal Wave
+04=Aqua Laser
+02=Spread
+01=Aqua Edge
+
+Raine = 0004ffffff
+------------------
+80=
+40=
+20=
+10=
+08=
+04=
+02=
+01=
+
+80=
+40=
+20=
+10=Bloody Lance*
+08=Dark Sphere*
+04=Force Field
+02=Sacred Light*
+01=Magic Shell*
+
+80=Holy Lance
+40=Ray
+20=Photon
+10=Charge
+08=Permaguard
+04=Field Barrier
+02=Barrier
+01=Keenness
+
+80=Acuteness
+40=Sharpness
+20=Anti-Magic
+10=Nullify
+08=Dispel
+04=Restore
+02=Purify
+01=Recover
+
+80=Revive
+40=Resurrection
+20=Revitalize
+10=Healing Circle
+08=Nurse
+04=Cure
+02=Heal
+01=First Aid
+
+Sheena = 0fffffffff
+-------------------
+80=
+40=
+20=
+10=Summon: Heart*
+08=Summon: Birth
+04=Summon: Origin
+02=Summon: Darkness
+01=Summon: Lightning
+
+80=Summon: Ice
+40=Summon: Earth
+20=Summon: Light
+10=Summon: Wind
+08=Summon: Water
+04=Summon: Fire
+02=Summon: Corrine
+01=T. Seal: Darkness
+
+80=S. Seal: Lightning
+40=S. Seal: Ice
+20=S. Seal: Earth
+10=S. Seal: Light
+08=S. Seal: Wind
+04=S. Seal: Water
+02=S. Seal: Fire
+01=Guardian Seal
+
+80=Cyclone Seal
+40=Purgatory Seal
+20=Demon Seal
+10=Force Seal
+08=Spirit Seal
+04=Life Seal
+02=M. Seal Absolute
+01=Mirage Seal Pinion
+
+80=Mirage Seal
+40=S. Seal Absolute
+20=Serpent Seal Pinion
+10=Serpent Seal
+08=Power Seal Absolute
+04=Power Seal Pinion
+02=Power Seal
+01=Pyre Seal
+
+Zelos = 0017ff9fff
+------------------
+80=
+40=
+20=
+10=
+08=
+04=
+02=
+01=
+
+80=
+40=
+20=
+10=Judgment
+08=Gungnir*
+04=Healing Wind
+02=Healing Stream
+01=First Aid
+
+80=Thunder Blade
+40=Lightning
+20=Grave
+10=Stone Blast
+08=Air Thrust
+04=Wind Blade
+02=Eruption
+01=Fire Ball
+
+80=Guardian
+40=Eternal Chaos*
+20=Spirit of the Earth*
+10=Demon Spear
+08=S. Lightning Blade
+04=Lightning Blade
+02=Hell Pyre
+01=Light Spear Cannon
+
+80=Victory Light Spear
+40=Light spear
+20=Super Sonic Thrust
+10=Hurricane Thrust
+08=Sonic Thrust
+04=Fierce Demon Fange
+02=Double Demon Fang
+01=Demon Fang
+
+Presea = 00006fdfef
+-------------------
+80=
+40=
+20=
+10=
+08=
+04=
+02=
+01=
+
+80=
+40=
+20=
+10=
+08=
+04=
+02=
+01=
+
+80=
+40=Earthly Protection
+20=Eternal Wind*
+10=Beast
+08=Eternal Damnation
+04=Fiery Infliction
+02=Eternal Devastation
+01=Mass Devastation
+
+80=Finite Devastation
+40=Devastation
+20=Finality Infliction*
+10=Resolute Infliction
+08=Endless Infliction
+04=Dual Infliction
+02=Infliction
+01=Finality Punishment
+
+80=Rising Punishment
+40=Dual Punishment
+20=Punishment
+10=Ultimate*
+08=Fiery Destruction
+04=Infinite Destruction
+02=Deadly Destruction
+01=Destruction
+
+Regal = 00062ffe7f
+------------------
+80=
+40=
+20=
+10=
+08=
+04=
+02=
+01=
+
+80=
+40=
+20=
+10=
+08=
+04=Bastion
+02=Mirage
+01=Rage*
+
+80=Dragon's Talon*
+40=Heaven Rising*
+20=Crescent Dark Moon
+10=Dragon Strike*
+08=Triple Rage Kick
+04=Heaven's Charge
+02=Dragon Rage
+01=Dragon Fury
+
+80=Rising Dragon
+40=Eagle Fall
+20=Eagle Rage
+10=Eagle Dive
+08=Dragon Dance
+04=Swallow Dance
+02=Swallow Kick
+01=Dragon Fang*
+
+80=Heel Kick*
+40=Wolverine
+20=Triple Kick
+10=Spin Kick
+08=Crescent Moon
+04=Grand Healer
+02=Chi Healer
+01=Healer
+
+Kratos = 0017ff9fff
+-------------------
+80=
+40=
+20=
+10=
+08=
+04=
+02=
+01=
+
+80=
+40=
+20=
+10=Judgment
+08=Gungnir*
+04=Healing Wind
+02=Healing Stream
+01=First Aid
+
+80=Thunder Blade
+40=Lightning
+20=Grave
+10=Stone Blast
+08=Air Thrust
+04=Wind Blade
+02=Eruption
+01=Fire Ball
+
+80=Guardian
+40=Eternal Chaos*
+20=Spirit of the Earth*
+10=Demon Spear
+08=S. Lightning Blade
+04=Lightning Blade
+02=Hell Pyre
+01=Light Spear Cannon
+
+80=Victory Light Spear
+40=Light spear
+20=Super Sonic Thrust
+10=Hurricane Thrust
+08=Sonic Thrust
+04=Fierce Demon Fange
+02=Double Demon Fang
+01=Demon Fang

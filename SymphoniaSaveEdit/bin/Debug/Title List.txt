@@ -1,0 +1,336 @@
+Lloyd = 1fff e7fe
+XX000000
+80 = n/a
+40 = n/a
+20 = n/a
+10 = Berserker
+08 = Eternal Apprentice
+04 = Gung Ho
+02 = Boorish General
+01 = Lone General
+
+00XX0000
+80 = Brave Soul
+40 = Tetra Slash
+20 = Combo Master
+10 = Combo Expert
+08 = Comboist
+04 = Combo Newbie
+02 = Holy Sword
+01 = Master Swordsman
+
+0000XX00
+80 = Grand Swordsman
+40 = Tactical Leader
+20 = Sword of Swords
+10 = <blank>
+08 = <blank>
+04 = Midlife Crisis
+02 = Peeping Tom
+01 = Gentle Idealist
+
+000000XX
+80 = Beach Boy
+40 = Arrgh, Me Hearties
+20 = Nobleman
+10 = Gourmet King
+08 = Eternal Swordsman
+04 = Drifting Swordsman
+02 = Swordsman
+01 = <none>
+
+colette = 003f fffe
+80 = n/a
+40 = n/a
+20 = n/a
+10 = n/a
+08 = n/a
+04 = n/a
+02 = n/a
+01 = n/a
+
+80 = n/a
+40 = n/a
+20 = Friendship First
+10 = Don't Run!
+08 = Self-Control
+04 = Single-minded
+02 = Oblivious
+01 = Little Pickpocket
+
+80 = Angelic Maiden
+40 = Tiny Angel
+20 = Chosen
+10 = Super Girl
+08 = Turbo Waitress
+04 = Ironing Board
+02 = Dog Lover
+01 = Ill-fated Girl
+
+80 = Mermaid
+40 = Maid
+20 = Fair Lady
+10 = Charismatic Chef
+08 = Klutz
+04 = Spiritua Reborn
+02 = Fledgling Chosen
+01 = <blank>
+
+Genis = 001f fffe
+80 = n/a
+40 = n/a
+20 = n/a
+10 = n/a
+08 = n/a
+04 = n/a
+02 = n/a
+01 = n/a
+
+80 = n/a
+40 = n/a
+20 = n/a
+10 = I Hate Gels!
+08 = Magic Cycle
+04 = Dependent
+02 = Study Harder!
+01 = Experimental
+
+80 = Warlock
+40 = Sorcerer
+20 = Mana Master
+10 = Ultimate Kid
+08 = Strategist
+04 = Figurine Collector
+02 = Item Collector
+01 = Brotherly Love
+
+80 = Beach Comber
+40 = Katz Katz Katz
+20 = Easter Sunday
+10 = Little Chef
+08 = Friend
+04 = Honor Roll
+02 = Magic User
+01 = <blank>
+
+Raine = 0003 fffe
+80 = 
+40 = 
+20 = 
+10 = 
+08 = 
+04 = 
+02 = 
+01 = 
+
+80 = 
+40 = 
+20 = 
+10 = 
+08 = 
+04 = 
+02 = Survivor
+01 = Never Say Never
+
+80 = Crimson Rose
+40 = Item Keeper
+20 = Wisewoman
+10 = Professor
+08 = Researcher
+04 = Gladiator Queen
+02 = Monster Collector
+01 = Sisterly Love
+
+80 = No, Not the Sun!
+40 = Maiden
+20 = Glamorous Beauty
+10 = Passable Chef?
+08 = Grand Healer
+04 = Archeological Mania
+02 = Teacher
+01 = <blank>
+
+Sheena = 0003 fffe
+80 = 
+40 = 
+20 = 
+10 = 
+08 = 
+04 = 
+02 = 
+01 = 
+
+80 = 
+40 = 
+20 = 
+10 = 
+08 = 
+04 = 
+02 = Combo Conductor
+01 = Party Comboist
+
+80 = Indecisive
+40 = Chicken
+20 = Ultimate Summoner
+10 = Acrobat
+08 = Rose of Battle
+04 = WOW!
+02 = Treasure Hunter
+01 = Master Cook
+
+80 = Queen of the Beach
+40 = Successor
+20 = You Look Great!
+10 = Master Summoner
+08 = Elemental Summoner
+04 = Summoner
+02 = Mysterious Assassin
+01 = <blank>
+
+Zelos = 0001 fffe
+80 = 
+40 = 
+20 = 
+10 = 
+08 = 
+04 = 
+02 = 
+01 = 
+
+80 = 
+40 = 
+20 = 
+10 = 
+08 = 
+04 = 
+02 = 
+01 = Loudmouth
+
+80 = Commander in Chief
+40 = Gilgamesh
+20 = Casanova
+10 = Tetra Slash
+08 = Elegant Swordsman
+04 = Gleaming Knight
+02 = Grand Champion
+01 = Idiot Chosen
+
+80 = Pickup Artist
+40 = Masked Swordsman
+20 = Narcissist
+10 = Gourmet Prince
+08 = Gigolo
+04 = Princess Guard
+02 = Magic Swordsman
+01 = <blank>
+
+Presea = 0000 fffe
+80 = 
+40 = 
+20 = 
+10 = 
+08 = 
+04 = 
+02 = 
+01 = 
+
+80 = 
+40 = 
+20 = 
+10 = 
+08 = 
+04 = 
+02 = 
+01 = 
+
+80 = Hunter
+40 = Associate
+20 = Lone Girl
+10 = Fragile Shield
+08 = Bursting Girl
+04 = Axman
+02 = Deadly Flower
+01 = Paw Mania
+
+80 = First-timer at Sea
+40 = Dream Traveler
+20 = Little Madam
+10 = Master Chef
+08 = Empty Soul
+04 = Mature Kid
+02 = Taciturn Girl
+01 = <blank>
+
+Regal = 0000 fffe
+80 = 
+40 = 
+20 = 
+10 = 
+08 = 
+04 = 
+02 = 
+01 = 
+
+80 = 
+40 = 
+20 = 
+10 = 
+08 = 
+04 = 
+02 = 
+01 = 
+
+80 = Pratfall King
+40 = Way of the Jungle
+20 = Potion King
+10 = Testosterone
+08 = Perfect Battler
+04 = Battle Artist
+02 = King of the Coliseum
+01 = Paw Dandy
+
+80 = Swimmer
+40 = God of The Kitchen
+20 = Dandy
+10 = True Chef
+08 = Eternal Sinner
+04 = El Presidente
+02 = Convict
+01 = <blank>
+
+Kratos = 0000 07fe
+80 = 
+40 = 
+20 = 
+10 = 
+08 = 
+04 = 
+02 = 
+01 = 
+
+80 = 
+40 = 
+20 = 
+10 = 
+08 = 
+04 = 
+02 = 
+01 = 
+
+80 = 
+40 = 
+20 = 
+10 = 
+08 = 
+04 = Tetra Slash
+02 = War God
+01 = Battle God
+
+80 = Magic Swordsman
+40 = Conqueror
+20 = Judgment
+10 = Gourmet Master
+08 = Dad
+04 = Traitor
+02 = Mercenary
+01 = <blank>

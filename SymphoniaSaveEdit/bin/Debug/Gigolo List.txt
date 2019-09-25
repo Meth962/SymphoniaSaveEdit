@@ -1,0 +1,278 @@
+None = 2fc4 - 01
+None = 2fc4 - 02
+None = 2fc4 - 04 flag for after Origin
+None = 2fc4 - 08
+None = 2fc4 - 10 flag for all women or Exire?, but doesn't matter
+
+Iselia = 2fc4 - 20
+2fbe - 08 - little girl at south exit
+2fbe - 04 - woman at south exit
+2fbe - 02 - old woman across from item shop
+2fbe - 20 - woman in vineyard
+2fbe - 10 - woman in front of mayor's house
+2fbe - 40 - lady near north exit
+2fbe - 80 - little girl by north exit
+
+Triet = 2fc4 - 40
+2fbe - 04 - left by shops
+2fbe - 08 - in front of inn
+2fbe - 01 - in lobby of inn
+2fbe - 02 - back room on 1st floor of inn
+2fbe - 10 - by fortune teller's tent
+
+Izoold = 2fc4 - 80
+2fbe - 04 - at entrance
+2fbe - 08 - little girl on beach
+2fbe - 02 - old woman in second house
+2fbe - 40 - little girl on second screen
+2fbe - 20 - two women talking on docks
+2fbe - 10 - two women talking on docks
+2fbe - 01 - little girl hiding in building on the docks
+
+Palmacosta = 2fc5 - 01 
+2fbf - 08 - just inside city by sign
+2fbf - 10 - right of entrance
+2fbf - 20 - on dock by bridge
+2fbe - 01 - in the first room on first floor of the inn
+2fbf - 40 - by armor and weapon shops
+2fbe - 02 - Wine Shop owner
+2fc0 - 10 - in front of Marble's shop
+2fbf - 80 - south side of plaza
+2fc0 - 02 - little girl by academy
+2fc0 - 04 - student in garden by academy
+2fc0 - 08 - Old woman behind fence by academy
+2fc0 - 40 - left student in 1st room, 1st floor of academy
+2fc0 - 20 - right student in 1st room, 1st floor of academy
+2fbe - 10 - left student in 2nd room, 1st floor of academy
+2fbe - 20 - right student in 2nd room, 1st floor of academy
+2fbe - 40 - 1st row in 1st room, 2nd floor of academy
+2fbe - 80 - 3rd row in 1st room, 2nd floor of academy
+2fbf - 01 - 1st row in 2nd room, 2nd floor of academy
+2fbf - 02 - 2nd row in 2nd room, 2nd floor of academy
+2fbf - 04 - 3rd row in 2nd room, 2nd floor of academy
+2fc0 - 01 - woman in northern plaza
+2fbe - 08 - old woman on right side of church
+2fbe - 04 - left side of church
+
+Asgard = 2fc5 - 02
+2fbf - 40 - just inside town
+2fbe - 01 - old woman in first inn
+2fbe - 02 - back room of first inn
+2fbf - 02 - back of first cave
+2fbf - 80 - near katz
+2fbe - 40 - girl by exit in second cave
+2fbf - 01 - little girl in second cave
+2fbe - 80 - back of second cave
+2fc0 - 01 - girl by second inn
+2fbe - 04 - receptionist of second inn
+2fbe - 08 - right room upstairs of second inn
+2fbe - 20 - second room of third inn
+2fbe - 10 - third room of third inn
+2fc0 - 08 - little girl in second area
+2fbf - 20 - woman in first house of second area
+2fc0 - 02 - women on the right side of second area
+2fc0 - 04 - women on the right side of second area
+2fc0 - 10 - little girl in middle area of second screen
+2fc0 - 20 - maid at highest point of second screen
+2fbf - 10 - maid on right side of highest house of second area
+2fbf - 04 - old woman in highest house of second screen
+2fbf - 08 - maid on left side of highest house of second area
+
+None = 2fc5 - 04
+None = 2fc5 - 08
+None = 2fc5 - 10
+
+Luin = 2fc5 - 20
+2fbe - 04 - in front of inn
+2fbe - 01 - back corner of inn
+2fbe - 80 - by bridge near item shop
+2fbe - 40 - south of item shop
+2fbe - 20 - old woman on dock south of item shop
+2fbe - 02 - girl upstairs in item shop
+2fbe - 08 - on docks south of fountain
+2fbe - 10 - girl by fountain
+
+Hima = 2fc5 - 40
+2fbe - 01 - 1st room of the inn on 1st floor
+
+Meltokio = 2fc5 - 80
+2fc2 - 02 - girl by sewer entrance
+2fc2 - 04 - woman by sewer entrance
+2fc2 - 08 - woman in front of item shop
+2fbe - 01 - woman inside inn lobby
+2fbe - 02 - maid in upstairs inn
+2fbe - 08 - girl in upstairs 2nd room
+2fbe - 04 - woman in upstairs 2nd room
+2fbf - 01 - receptionist in elemental research academy
+2fbf - 02 - basement of elemental research academy
+2fc0 - 20 - in front of elemental research academy
+2fc1 - 20 - base of stairs in slum
+2fc1 - 10 - rooftops of slum
+2fc0 - 10 - girl in plaza
+2fc0 - 80 - old woman in plaza
+2fc0 - 40 - woman in plaza
+2fc2 - 10 - nurse by coliseum
+2fbe - 20 - girl in coliseum lobby
+2fbe - 10 - receptionist of coliseum
+2fbe - 40 - girl in coliseum waiting room
+2fbe - 80 - nurse in coliseum waiting room
+2fc1 - 04 - wandering in front of castle
+2fc1 - 02 - main in front of castle
+2fc1 - 01 - priestess in front of church
+2fbf - 04 - priestess just inside of church
+2fbf - 08 - priestess on right side of church
+2fbf - 20 - woman on the left side of the 2nd floor of castle
+2fc0 - 04 - maid in left castle room, 2nd floor
+2fbf - 40 - woman on the right side of the 2nd floor of castle
+2fbf - 80 - maid in the kitchen of the castle
+2fc0 - 01 - little girl in kitchen of the castle
+2fc0 - 02 - left maid in the kitchen of the castle
+2fc1 - 40 - woman left of zelos' house
+2fc1 - 80 - woman in front of zelos' house
+2fc2 - 01 - woman right of zelos' house
+
+Sybak = 2fc6 - 01
+2fbe - 01 - girl in inn
+2fc0 - 08 - girl in front of inn
+2fc0 - 04 - student in front of inn
+2fbf - 40 - library receptionist
+2fc0 - 01 - blonde in library
+2fc0 - 02 - brunette in library
+2fbf - 80 - blue haired student in library
+2fc0 - 20 - girl by water on second screen
+2fc0 - 10 - girl by secret entrance
+2fbe - 10 - 1st room of 1st floor corridor in academy
+2fbe - 20 - 2nd room of 1st floor corridor in academy
+2fbe - 08 - hallway of 1st floor corridor in academy
+2fbf - 01 - 4th room of 1st floor corridor in academy
+2fbf - 02 - 5th room of 1st floor corridor in academy
+2fbf - 04 - 6th room of 1st floor corridor in academy
+2fbf - 10 - next to table in cafeteria of academy
+2fbf - 08 - in corner of cafeteria in academy
+2fbf - 20 - right side of cafeteria in academy
+2fbe - 02 - top of lobby stairs in academy
+2fbe - 40 - 1st room of 2nd floor corridor in academy
+2fbe - 04 - hallway of 2nd floor corridor in academy
+2fbe - 80 - 3rd room of 2nd floor corridor in academy
+
+Ozette = 2fc6 - 02
+2fbe - 01 - Girl in inn
+2fbe - 02 - Little girl by armor shop
+2fbe - 04 - Old lady by sign
+
+Altimira = 2fc6 - 04
+2fbf - 40 - bunny girl by inn
+2fbf - 20 - top of stairs by beach
+2fc1 - 10 - bottom of stairs of beach
+2fc0 - 40 - by changing stalls on beach
+2fc0 - 80 - bunny girl by beach bar
+2fc1 - 01 - by beach chairs
+2fc0 - 01 - south of bridge
+2fbf - 80 - bunny girl by bridge
+2fc0 - 02 - by elemental railway
+2fc1 - 08 - bunny girl in amusement park
+2fc1 - 02 - little girl in amusement park
+2fc1 - 04 - lady by teacup ride
+2fbe - 01 - little girl on 2F of hotel
+2fbe - 02 - on south side of 3F of hotel
+2fbe - 04 - old woman on 3F of hotel
+2fbe - 08 - blonde woman on 3F of hotel
+Altimira Night
+2fc0 - 04 - in front of casino
+2fbe - 40 - bunny girl by front desk of casino
+2fbf - 04 - blond girl on left side of casino
+2fbe - 80 - bunny girl blackjack dealer
+2fbf - 10 - woman playing blackjack in casino
+2fbf - 08 - right of the black jack table
+2fbf - 01 - bunny girl by slots
+2fbf - 02 - girl playing the slots
+2fc0 - 08 - left side of theater in second row
+2fc0 - 10 - left side of theater in first row
+2fc0 - 20 - right side of theater in first row
+2fbe - 10 - maid on fourth floor of hotel
+2fbe - 20 - maid on fifth floor of hotel
+
+Flanoir = 2fc6 - 08
+2fbe - 20 - old woman across from inn
+2fbe - 01 - in lobby of inn
+2fbe - 02 - maid on second floor
+2fbe - 04 - woman in back upstairs room of inn
+2fbe - 40 - little girl on lowest level of first screen
+2fbf - 01 - second woman in line for doctor
+2fbf - 02 - little girl left of doctor's office
+2fbe - 80 - Girl below accessory shop
+2fbf - 04 - Little girl outside of church
+2fbe - 08 - Just inside church
+2fbe - 10 - Priestess in church
+
+Heimdall = 2fc6 - 10
+2fbe - 04 - right side of weapons shop
+2fbf - 08 - porch of item shop
+2fbe - 40 - walking near streams above item shop
+2fbe - 10 - south east of first screen
+2fbe - 20 - hanging laundry by inn
+2fbe - 01 - just inside inn
+2fbe - 02 - between beds at inn
+2fbf - 04 - in front of left house on second screen
+2fbe - 80 - on windmill's platform
+2fbe - 08 - inside left house of second screen
+2fbf - 01 - girl in front of elder's house
+2fbf - 02 - girl by the dog named Cookie
+
+Exire - 2cf6 - 20
+2fbe - 02 - old woman on left side of town
+2fbe - 04 - woman on second platform with the dog
+2fbe - 01 - inside lowest level of three story building
+2fbe - 08 - hiding outside second story of the three story building
+2fbe - 40 - little girl by elder's house
+2fbe - 20 - woman outside of elder's house
+2fbe - 10 - old woman outside of elder's house
+
+Iselia House of Salvation = 2fc6 - 40
+2fbe - 01 - old woman upstairs
+
+Thoda Dock = 2fc6 - 80
+2fbe - 01 - old woman upstairs
+
+None = 2fc7 - 01
+
+Asgard House of Salvation = 2fc7 - 02
+2fbe - 01 - Upstairs in building
+
+Hot Springs = 2fc7 - 04
+2fbe - 01 - priestess in chapel
+2fbe - 02 - old woman upstairs
+
+Meltokio House of Guidance = 2fc7 - 08
+2fbe - 01 - old woman outside
+2fbe - 02 - priestess inside
+
+SE Abbey = 2fc7 - 10
+2fbe - 01 - girl by fence
+2fbe - 02 - girl wandering
+
+Heimdall House of Guidance = 2fc7 - 20
+2fbe - 01 - girl outside building
+2fbe - 02 - upstairs in building
+
+Thoda Geyser = 2fc7 - 40
+2fbe - 02 - old woman
+2fbe - 04 - tour guide
+2fbe - 01 - near steps to the seal
+
+Balacruf Mausoleum = 2fc7 - 80
+2fbe - 01 - old woman at entrance
+
+Mizuho = 2fc8 - 01
+2fbe - 04 - by gravesite
+2fbe - 01 - in first building
+2fbe - 02 - woman by bridge
+2fbe - 08 - girl by bridge
+
+None = 2fc8 - 02
+None = 2fc8 - 04
+None = 2fc8 - 08
+None = 2fc8 - 10
+None = 2fc8 - 20
+None = 2fc8 - 40
+None = 2fc8 - 80
