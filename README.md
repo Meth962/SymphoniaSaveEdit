@@ -1,9 +1,26 @@
 # SymphoniaSaveEdit
-A save viewer and editor for Tales of Symphonia for PC, GC, or PS3.
+A save viewer and editor for Tales of Symphonia for PC, GC, PS3, Switch and unencrypted PS4 saves.
 
 This is a very old project that I built for myself. Enough people were asking about it though so I was semi-supporting it. I could not keep up with the myriad of requests such as "Make Yuan a playable character" so I lost interest. However, it should support most things you would need to do to your save file.
 
+Anything that is displayed by this program can also be changed. Some things are not in a field that is changeable but can be added at some point as requested. I simply wasn't changing those values and therefore left them as display only.
+
 ## History
+**v0.9.0.0** (3/30/2024): PS4 + Rewrite
+* Thanks to Noxbur, we found how the PS4 version calculates checksum. This works with raw (decrypted) PS4 saves.
+* Have to confirm on other platforms but this fix is focusing on PS4/Switch raw saves.  
+* Code needs a rewrite. Started the process of splitting console specific code into other classes and removing methods from the monolithic main class.
+* Finally solved the small differences that brought confusion between all versions
+  | Platform | Endianness | Offset | Checksum |
+  | -------- | ---------- | ------ | -------- |
+  | GC | big | 0x1bd | 0x0008-0x29d4 |
+  | PS3 | big | 0x4a0 | 0x0004-0x2614 |
+  | PC | little | 0x548 | none |
+  | Switch | little | 0x4a8 | none |
+  | PS4 | little | 0x4a8 | 0x0004-0x25f8 |
+* Titles corrected after they were reversed around from PS3 version being backwards (big-endian)
+* Bugged titles are now listed as such and unclickable
+
 9/24/2019
 * Added support for unencrypted PS3 files since some emulators do not follow the PS3's file format correctly.
   
