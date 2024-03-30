@@ -381,7 +381,8 @@ namespace SymphoniaSaveEdit
 
         public static Dictionary<SaveType, string[]> ItemNames = new Dictionary<SaveType, string[]>()
         {
-            { SaveType.PCRaw, new string[] {
+            { 
+                SaveType.PCRaw, new string[] {
                   "Apple Gel",
                   "Lemon Gel",
                   "Orange Gel",
@@ -904,7 +905,8 @@ namespace SymphoniaSaveEdit
                   "Spiritua's Ring",
                   "Vinheim Key"
                 }
-            },{SaveType.PS3, new string[] {
+            },{
+                SaveType.PS3, new string[] {
                   "Apple Gel",
                   "Lemon Gel",
                   "Orange Gel",
@@ -1427,7 +1429,8 @@ namespace SymphoniaSaveEdit
                   "Spiritua's Ring",
                   "Vinheim Key"
                 }
-            },{SaveType.PS4, new string[] {
+            },{
+                SaveType.PS4, new string[] {
                   "Apple Gel",
                   "Lemon Gel",
                   "Orange Gel",
@@ -1953,7 +1956,8 @@ namespace SymphoniaSaveEdit
                   "Theater Ticket",
                   "Forget-Me-Not"
                 }
-            },{SaveType.GC, new string[] {
+            },{
+                SaveType.GC, new string[] {
                   "Apple Gel",
                   "Lemon Gel",
                   "Orange Gel",
@@ -2476,7 +2480,8 @@ namespace SymphoniaSaveEdit
                   "Spiritua's Ring",
                   "Vinheim Key"
                 }
-            },{SaveType.Switch, new string[]
+            },{
+                SaveType.Switch, new string[]
                 {
                   "Apple Gel",
                   "Lemon Gel",
