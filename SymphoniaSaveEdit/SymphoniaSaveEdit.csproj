@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -9,10 +9,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SymphoniaSaveEdit</RootNamespace>
     <AssemblyName>SymphoniaSaveEdit</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -23,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -32,6 +34,10 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>symphonia %281%29.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=11.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
@@ -61,6 +67,14 @@
     </ApplicationDefinition>
     <Compile Include="Globals.cs" />
     <Compile Include="SaveObj\GameTime.cs" />
+    <Compile Include="SaveObj\GCSave.cs" />
+    <Compile Include="SaveObj\PCSave.cs" />
+    <Compile Include="SaveObj\PS3Save.cs" />
+    <Compile Include="SaveObj\PS4Save.cs" />
+    <Compile Include="SaveObj\SaveFile.cs" />
+    <Compile Include="SaveObj\SwitchSave.cs" />
+    <Compile Include="SaveType.cs" />
+    <Compile Include="Utils\BinaryHelper.cs" />
     <Compile Include="Utils\Extensions.cs" />
     <Compile Include="Utils\JsonConverters.cs" />
     <Compile Include="Utils\JsonPresentationFormatter.cs" />
@@ -72,7 +86,7 @@
     <Compile Include="PS3\Ps3SaveManager.cs" />
     <Compile Include="PS3\SecureFileInfo.cs" />
     <Compile Include="SaveObj\Character.cs" />
-    <Compile Include="SaveObj\SaveFile.cs" />
+    <Compile Include="SaveObj\GameSave.cs" />
     <Compile Include="Utils\BinaryWriterExtension.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -122,6 +136,12 @@
     <Resource Include="Resources\tos_border_2.png" />
     <Resource Include="Resources\tos_border_3.png" />
     <Resource Include="Resources\tos_border_4.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="symphonia.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="symphonia %281%29.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -19,46 +19,34 @@ using PS3FileSystem;
 using System.Web.Script.Serialization;
 using SymphoniaSaveEdit.Utils;
 using Newtonsoft.Json;
+using Path = System.IO.Path;
 
 namespace SymphoniaSaveEdit
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
-        public MainWindow()
-        {
-            InitializeComponent();
-        }
-
-        private const int offsetGCS = 0x110;
-        private const int offsetSAV = 0x80;
-        private const int offsetGCI = 0;
-        private const int saveSize = 0x603f;
-        private const string gameID = "GQS";
-
-        string filename = string.Empty;
-        int offset = 0;
-        bool littleEndian = true;
-
         private short treasureCount = 0;
         private short itemCount = 0;
         private short dogCount = 0;
         private short womenCount = 0;
 
-        List<SaveFile> saves = new List<SaveFile>();
-        Ps3SaveManager manager;
-        byte[] fileData;
-        bool unencrypted;
+        SaveFile save;
+        string filename = string.Empty;
+        SaveType saveType = SaveType.PCRaw;
 
         // Ugly WPF fault coding
         int previousTab = -1;
         bool codeControl = false;
         int currentItem = -1;
 
+        public MainWindow()
+        {
+            InitializeComponent();
+        }
+
         private void ClearFields()
         {
+            cbxSaves.Items.Clear();
             lblMaxGald.Content = string.Empty;
             lblMaxGrade.Content = string.Empty;
             lblMaxItems.Content = string.Empty;
@@ -71,12 +59,265 @@ namespace SymphoniaSaveEdit
             pbTotal.Visibility = System.Windows.Visibility.Hidden;
         }
 
+        private void ShowItems()
+        {
+            if (cbxSaves.SelectedIndex < 0)
+                return;
+
+            if (save.Saves.Count < cbxSaves.SelectedIndex + 1)
+                return;
+
+            GameSave s = save.Saves[cbxSaves.SelectedIndex];
+
+            int items = s.Items.Count(i => i > 0);
+            lblTotal.Content = string.Format("Items: {0}/{1} ({2:n1}%)", items, itemCount, Math.Truncate(items * 100.0 / itemCount * 10) / 10);
+            pbTotal.Visibility = System.Windows.Visibility.Visible;
+            pbTotal.Maximum = itemCount;
+            pbTotal.Value = items;
+        }
+
+        private void ShowDogs()
+        {
+            if (cbxSaves.SelectedIndex < 0)
+                return;
+
+            if (save.Saves.Count < cbxSaves.SelectedIndex + 1)
+                return;
+
+            GameSave s = save.Saves[cbxSaves.SelectedIndex];
+
+            int dogs = s.DogLover.Count(d => d == true);
+            lblTotal.Content = string.Format("Dogs: {0}/{1} ({2:n1}%)", dogs, dogCount, Math.Truncate(dogs * 100.0 / dogCount * 10) / 10);
+            pbTotal.Visibility = System.Windows.Visibility.Visible;
+            pbTotal.Maximum = dogCount;
+            pbTotal.Value = dogs;
+        }
+
+        private void ShowWomen()
+        {
+            if (cbxSaves.SelectedIndex < 0)
+                return;
+
+            if (save.Saves.Count < cbxSaves.SelectedIndex + 1)
+                return;
+
+            GameSave s = save.Saves[cbxSaves.SelectedIndex];
+
+            int women = s.Gigolo.Count(g => g == true);
+            lblTotal.Content = string.Format("Women: {0}/{1} ({2:n1}%)", women, womenCount, Math.Truncate(women * 100.0 / womenCount * 10) / 10);
+            pbTotal.Visibility = System.Windows.Visibility.Visible;
+            pbTotal.Maximum = womenCount;
+            pbTotal.Value = women;
+        }
+
+        private void ShowTreasure()
+        {
+            if (cbxSaves.SelectedIndex < 0)
+                return;
+
+            if (save.Saves.Count < cbxSaves.SelectedIndex + 1)
+                return;
+
+            GameSave s = save.Saves[cbxSaves.SelectedIndex];
+
+            int treasures = s.Treasure.Count(t => t == true);
+            lblTotal.Content = string.Format("Treasures: {0}/{1} ({2:n1}%)", treasures, treasureCount, Math.Truncate(treasures * 100.0 / treasureCount * 10) / 10);
+            pbTotal.Visibility = System.Windows.Visibility.Visible;
+            pbTotal.Maximum = treasureCount;
+            pbTotal.Value = treasures;
+        }
+
+        private void GetData()
+        {
+            if (cbxSaves.SelectedIndex < 0)
+                return;
+
+            //if (saves.Count < cbxSaves.SelectedIndex + 1)
+            if (save.Saves.Count < cbxSaves.SelectedIndex + 1)
+                return;
+
+            GameSave s = save.Saves[cbxSaves.SelectedIndex];
+            lblLastModified.Content = s.LastModified.ToString();
+            //lblChecksum.Content = save.Checksum1.ToString("X2");
+
+            UpdateCounts(s);
+
+            UpdateStats(s);
+
+            UpdateItems(s);
+
+            UpdateSaveString(s);
+        }
+
+        private void UpdateItems(GameSave save)
+        {
+            lbxItems.Items.Clear();
+            for (int i = 0; i < save.Items.Length; i++)
+            {
+                if (i + 1 > Globals.ItemNames[saveType].Length)
+                {
+                    lbxItems.Items.Add($"Unknown : {save.Items[i]}");
+                    Console.WriteLine($"Error itemId {i} does not exist in {saveType}");
+                }
+                else
+                    lbxItems.Items.Add(string.Format("{0} : {1}", Globals.ItemNames[saveType][i], save.Items[i]));
+            }
+        }
+
+        private void UpdateStats(GameSave save)
+        {
+            // Stats
+            StringBuilder sb = new StringBuilder();
+            sb.AppendFormat("Checksum1: {0:X2}\r\n", save.Checksum1);
+            sb.AppendFormat("Checksum2: {0:X2}\r\n", save.Checksum2);
+            sb.AppendFormat("FChecksum1: {0:X2}\r\n", this.save.Checksum1);
+            sb.AppendLine();
+            sb.Append("Party: ");
+            for (int i = 0; i < 8; i++)
+            {
+                if (save.Party[i] != 0)
+                {
+                    if (save.Party[i] < Globals.CharacterNames.Length+1)
+                        sb.AppendLine(Globals.CharacterNames[save.Party[i]-1]);
+                    else
+                        sb.AppendLine("Unknown");
+                }
+            }
+            sb.AppendLine();
+            sb.AppendLine("Common Data");
+            sb.AppendLine(string.Format("Max Play Time: {0}", save.MaxGameTime.ToString()));
+            sb.AppendLine(string.Format("Max Gald: {0:n0}", save.MaxGald));
+            sb.AppendLine(string.Format("Total Gald Used: {0:n0}", save.TotalGaldUsed));
+            sb.AppendLine(string.Format("Saves: {0:n0}", save.Saves));
+            sb.AppendLine(string.Format("Game Cleared: {0}", save.GameCleared));
+            sb.AppendLine();
+            sb.AppendLine("Battle Record");
+            sb.AppendLine(string.Format("Encounters: {0:n0}", save.MaxEncounters));
+            sb.AppendLine(string.Format("Escapes: {0:n0}", save.Escapes));
+            sb.AppendLine(string.Format("Max Combo: {0} hit", save.MaxCombo));
+            sb.AppendLine(string.Format("Max Damage: {0:n0}", save.MaxDmg));
+            sb.AppendLine(string.Format("Max Grade: {0:n2}", save.MaxGrade));
+            sb.AppendLine();
+            sb.AppendLine("Current");
+            sb.AppendLine(string.Format("Game Time: {0}", save.GameTime.ToString()));
+            sb.AppendLine(string.Format("Gald: {0:n0}", save.Gald));
+            sb.AppendLine(string.Format("Encounters: {0:n0}", save.Encounters));
+            sb.AppendLine(string.Format("Combo: {0} hit", save.MaxCombo));
+            sb.AppendLine(string.Format("Grade: {0:n2}", save.Grade));
+            sb.AppendLine();
+            sb.AppendLine(string.Format("Battles: {0:n0}", save.Battles));
+            for (int i = 0; i < 9; i++)
+            {
+                sb.AppendFormat("{0} Battles: {1:n0}\r\n", save.Characters[i].Name, save.Characters[i].Battles);
+            }
+            sb.AppendLine();
+            for (int i = 0; i < 9; i++)
+            {
+                sb.AppendFormat("{0} Kills: {1:n0}\r\n", save.Characters[i].Name, save.Characters[i].Kills);
+            }
+            sb.AppendLine();
+            //sb.AppendLine(save.TreasureString);
+            lblInfo.Text = sb.ToString();
+            sb = null;
+        }
+
+        private void UpdateCounts(GameSave save)
+        {
+            // Treasure
+            lbxTreasures.Items.Clear();
+            for (int x = 0; x < save.Treasure.Length; x++)
+            {
+                if (!save.Treasure[x] && x != 239)
+                    lbxTreasures.Items.Add(string.Format("{0}: {1}", x + 1, Globals.TreasureNames[x]));
+            }
+
+            // Gigolo
+            lbxWomen.Items.Clear();
+            for (int x = 0; x < save.Gigolo.Length; x++)
+            {
+                if (!save.Gigolo[x] && Globals.WomenNames[x] != "None")
+                    lbxWomen.Items.Add(string.Format("{0}: {1}", x + 1, Globals.WomenNames[x]));
+            }
+
+            // Dog Lover
+            lbxDogs.Items.Clear();
+            for (int x = 0; x < save.DogLover.Length; x++)
+            {
+                if (!save.DogLover[x] && Globals.DogNames[x] != "None")
+                    lbxDogs.Items.Add(string.Format("{0}: {1}", x + 1, Globals.DogNames[x]));
+            }
+        }
+
+        private void UpdateSaveString(GameSave save)
+        {
+            //tbxJSON.Text = new JSonPresentationFormatter().Format(save);
+            tbxJSON.Text = JsonConvert.SerializeObject(save, Formatting.Indented);
+        }
+
+        private void SaveFile()
+        {
+            if (save.Saves.Count == 0 || cbxSaves.SelectedIndex > save.Saves.Count - 1)
+                return;
+
+            SaveFileDialog svd = new SaveFileDialog();
+            switch(saveType)
+            {
+                case SaveType.GC:
+                    svd.Filter = "GameCube Save|*.gci;*.gcs;*.sav";
+                    break;
+                case SaveType.PS3:
+                    svd.Filter = "PS3 Save File|*.bin;*.pfd;*.sfo";
+                    break;
+                case SaveType.PS4:
+                    svd.Filter = "PS4 Unencrypted File|*.dat";
+                    break;
+                case SaveType.Switch:
+                    svd.Filter = "Switch Save File|*.dat";
+                    break;
+                case SaveType.PCRaw:
+                    svd.Filter = "PC Raw File|*.dat";
+                    break;
+                default:
+                    svd.Filter = "Raw Save File|*.dat";
+                    break;
+            }
+            if ((bool)!svd.ShowDialog())
+                return;
+
+            filename = svd.FileName;
+
+            GameSave s = save.Saves[cbxSaves.SelectedIndex];
+            try
+            {
+                s = JsonConvert.DeserializeObject<GameSave>(tbxJSON.Text);
+                save.Saves[cbxSaves.SelectedIndex] = s;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.ToString(), "Error Serializing Edit");
+                return;
+            }
+
+            save.WriteSave(filename, cbxSaves.SelectedIndex);
+
+            MessageBox.Show(Path.GetFileName(filename), "File Saved", MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        #region Form Code
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            treasureCount = (short)Globals.TreasureNames.Count(t => !t.Contains("None"));
+            itemCount = (short)Globals.ItemNames[saveType].Count(i => !i.Contains("None"));
+            dogCount = (short)Globals.DogNames.Count(d => !d.Contains("None"));
+            womenCount = (short)Globals.WomenNames.Count(w => !w.Contains("None"));
+        }
+
         private void btnOpen_Click(object sender, RoutedEventArgs e)
         {
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Multiselect = true;
             ofd.DefaultExt = "*.gci, *.gcs, *.sav";
-            ofd.Filter = "GameCube Save files (*.gci, *.gcs, *.sav)|*.gci;*.gcs;*.sav|PS3 Save files (*.bin, *.pfd, *.sfo)|*.pfd;*.sfo;*.bin|PC Save Files (*.dat)|*.dat;|All files (*.*)|*.*";
+            ofd.Filter = "GameCube Save files (*.gci, *.gcs, *.sav)|*.gci;*.gcs;*.sav|PS3 Save files (*.bin, *.pfd, *.sfo)|*.pfd;*.sfo;*.bin|Switch Save File (*.dat)|*.dat|PS4 Unencrypted Save (*.dat)|*.dat|PC Save Files (*.dat)|*.dat;|All files (*.*)|*.*";
 
             var result = ofd.ShowDialog();
             if (result == true)
@@ -86,29 +327,357 @@ namespace SymphoniaSaveEdit
                 filename = ofd.FileName;
                 if (ofd.FileNames.Length > 1)
                 {
-                    unencrypted = false;
-                    OpenPS3Save(ofd.FileNames);
+                    //unencrypted = false;
+                    save = new PS3Save(ofd.FileNames);
                 }
                 else if (filename.ToLower().EndsWith(".bin"))
                 {
-                    unencrypted = true;
-                    OpenPS3Save(ofd.FileNames);
+                    //unencrypted = true;
+                    save = new PS3Save(ofd.FileNames);
                 }
                 else if (filename.ToLower().EndsWith(".dat"))
-                    OpenPCSave(filename);
+                {
+                    if (ofd.FilterIndex == 3)
+                        save = new SwitchSave(filename);
+                    else if (ofd.FilterIndex == 4)
+                        save = new PS4Save(filename);
+                    else
+                        save = new PCSave(filename);
+                }
                 else
-                    OpenSaveFile(filename);
+                    save = new GCSave(filename);
+
+                if (save.Saves.Count == 1) cbxSaves.Items.Add(save.Saves[0].SaveName);
+                else cbxSaves.Items.Add(save.Saves.Select(x => x.SaveName).ToArray());
 
                 if (cbxSaves.Items.Count > 0)
                     cbxSaves.SelectedIndex = 0;
             }
         }
 
-        private void OpenPS3Save(string[] filenames)
+        private void cbxSaves_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            GetData();
+
+            switch (tabControl.SelectedIndex)
+            {
+                case 0:
+                    ShowTreasure();
+                    break;
+                case 1:
+                    ShowWomen();
+                    break;
+                case 2:
+                    ShowDogs();
+                    break;
+                case 3:
+                    ShowItems();
+                    break;
+            }
+        }
+
+        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (tabControl.SelectedIndex == previousTab)
+                return;
+            previousTab = tabControl.SelectedIndex;
+            switch (tabControl.SelectedIndex)
+            {
+                case 1:
+                    ShowTreasure();
+                    break;
+                case 2:
+                    ShowWomen();
+                    break;
+                case 3:
+                    ShowDogs();
+                    break;
+                case 4:
+                    ShowItems();
+                    break;
+            }
+        }
+
+        private void cbxStatChar_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            StringBuilder sb = new StringBuilder();
+            GameSave sv = save.Saves[cbxSaves.SelectedIndex];
+            int i = cbxStatChar.SelectedIndex;
+            sb.AppendFormat("Lvl: {0}\r\n", sv.Characters[i].Level);
+            sb.AppendFormat("Exp: {0:n0}\r\n", sv.Characters[i].Exp);
+            sb.AppendFormat("Status: {0:X2}\r\n", sv.Characters[i].Status);
+            sb.AppendLine();
+            sb.AppendFormat("HP: {0}/{1}\r\n", sv.Characters[i].HP, sv.Characters[i].MaxHP);
+            sb.AppendFormat("TP: {0}/{1}\r\n", sv.Characters[i].TP, sv.Characters[i].MaxTP);
+            sb.AppendFormat("Str: {0:000}        Def: {1:000}\r\n", sv.Characters[i].Str, sv.Characters[i].Def);
+            sb.AppendFormat("{0}: {1:000}  Acc: {2:000}\r\n", i == 0 ? "Thrust" : "Atk", sv.Characters[i].Atk, sv.Characters[i].Acc);
+            sb.AppendFormat("{0}: {1:000}    Eva: {2:000}\r\n", i == 0 ? "Slash" : "Att", sv.Characters[i].Atk2, sv.Characters[i].Eva);
+            sb.AppendFormat("Int: {0:000}         Lck: {1:000}\r\n", sv.Characters[i].Int, sv.Characters[i].Lck);
+            sb.AppendLine();
+            sb.AppendFormat("Weapon: {0}\r\n", sv.Characters[i].Weapon == 0 ? string.Empty : Globals.ItemNames[saveType][sv.Characters[i].Weapon - 1]);
+            sb.AppendFormat("Armor: {0}\r\n", sv.Characters[i].Armor == 0 ? string.Empty : Globals.ItemNames[saveType][sv.Characters[i].Armor - 1]);
+            sb.AppendFormat("Helm: {0}\r\n", sv.Characters[i].Helm == 0 ? string.Empty : Globals.ItemNames[saveType][sv.Characters[i].Helm - 1]);
+            sb.AppendFormat("Arms: {0}\r\n", sv.Characters[i].Arms == 0 ? string.Empty : Globals.ItemNames[saveType][sv.Characters[i].Arms - 1]);
+            sb.AppendFormat("Accessory: {0}\r\n", sv.Characters[i].Accessory1 == 0 ? string.Empty : Globals.ItemNames[saveType][sv.Characters[i].Accessory1 - 1]);
+            sb.AppendFormat("Accessory: {0}\r\n", sv.Characters[i].Accessory2 == 0 ? string.Empty : Globals.ItemNames[saveType][sv.Characters[i].Accessory2 - 1]);
+            sb.AppendLine();
+            sb.AppendFormat("Overlimit: {0}%\r\n", sv.Characters[i].Overlimit);
+            sb.AppendFormat("Affection: {0:n0}\r\n", sv.Characters[i].Affection);
+
+            // Titles
+            lbxTitles.Items.Clear();
+            for (int b = 0; b < sv.Characters[i].Titles.Length; b++)
+            {
+                var c = new CheckBox() { Tag = b, Content = Globals.Titles[i, b], IsChecked = sv.Characters[i].Titles[b], Foreground = Globals.WhiteBrush, Style = Resources["CheckBoxStyle"] as Style };
+                if (c.Content.ToString().StartsWith("Bugged"))
+                {
+                    c.IsEnabled = false;
+                    c.Foreground = new SolidColorBrush(Color.FromArgb(255, 96, 96, 96));
+                }
+                c.Checked += chkTitle_Checked;
+                c.Unchecked += chkTitle_Unchecked;
+                lbxTitles.Items.Add(c);
+            }
+            sb.AppendLine();
+
+            // Techs
+            lbxTechs.Items.Clear();
+            for (int b = 0; b < sv.Characters[i].Techs.Length; b++)
+            {
+                var c = new CheckBox() { Tag = b, Content = Globals.Techs[i, b], IsChecked = sv.Characters[i].Techs[b], Foreground = Globals.WhiteBrush, Style = Resources["CheckBoxStyle"] as Style };
+                c.Checked += chkTech_Checked;
+                c.Unchecked += chkTech_Unchecked;
+                lbxTechs.Items.Add(c);
+            }
+
+            tbxStats.Text = sb.ToString();
+        }
+
+        private void chkTech_Unchecked(object sender, RoutedEventArgs e)
+        {
+            var i = (int)((CheckBox)e.OriginalSource).Tag;
+            save.Saves[cbxSaves.SelectedIndex].Characters[cbxStatChar.SelectedIndex].Techs[i] = false;
+            UpdateSaveString(save.Saves[cbxSaves.SelectedIndex]);
+        }
+
+        private void chkTech_Checked(object sender, RoutedEventArgs e)
+        {
+            var i = (int)((CheckBox)e.OriginalSource).Tag;
+            save.Saves[cbxSaves.SelectedIndex].Characters[cbxStatChar.SelectedIndex].Techs[i] = true;
+            UpdateSaveString(save.Saves[cbxSaves.SelectedIndex]);
+        }
+
+        private void chkTitle_Checked(object sender, RoutedEventArgs e)
+        {
+            var i = (int)((CheckBox)e.OriginalSource).Tag;
+            save.Saves[cbxSaves.SelectedIndex].Characters[cbxStatChar.SelectedIndex].Techs[i] = true;
+            UpdateSaveString(save.Saves[cbxSaves.SelectedIndex]);
+        }
+
+        private void chkTitle_Unchecked(object sender, RoutedEventArgs e)
+        {
+            var i = (int)((CheckBox)e.OriginalSource).Tag;
+            save.Saves[cbxSaves.SelectedIndex].Characters[cbxStatChar.SelectedIndex].Titles[i] = false;
+            UpdateSaveString(save.Saves[cbxSaves.SelectedIndex]);
+        }
+
+        private void btnSaveEdit_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFile();
+        }
+
+        private void btnMaxGald_Click(object sender, RoutedEventArgs e)
+        {
+            int i = cbxSaves.SelectedIndex;
+            save.Saves[i].Gald = 999999;
+            save.Saves[i].GaldCurrent = 999999;
+            save.Saves[i].MaxGald = 999999;
+            UpdateSaveString(save.Saves[i]);
+            UpdateStats(save.Saves[i]);
+            lblMaxGald.Content = "Set gald to 999,999";
+        }
+
+        private void btnMaxStats_Click(object sender, RoutedEventArgs e)
+        {
+            int i = cbxSaves.SelectedIndex;
+            for (int c = 0; c < 9; c++)
+            {
+                save.Saves[i].Characters[c].Acc = 1999;
+                save.Saves[i].Characters[c].Atk = 1999;
+                save.Saves[i].Characters[c].Atk2 = 1999;
+                save.Saves[i].Characters[c].Def = 1999;
+                save.Saves[i].Characters[c].Eva = 1999;
+                save.Saves[i].Characters[c].Exp = 999999;
+                save.Saves[i].Characters[c].HP = 9999;
+                save.Saves[i].Characters[c].Int = 1999;
+                save.Saves[i].Characters[c].Lck = 1999;
+                save.Saves[i].Characters[c].Level = 250;
+                save.Saves[i].Characters[c].MaxHP = 9999;
+                save.Saves[i].Characters[c].MaxTP = 999;
+                save.Saves[i].Characters[c].Overlimit = 100;
+                save.Saves[i].Characters[c].Status = 0;
+                save.Saves[i].Characters[c].Str = 1999;
+                save.Saves[i].Characters[c].TP = 999;
+            }
+            UpdateSaveString(save.Saves[i]);
+            lblMaxStats.Content = "Set all characters stats to maximums";
+        }
+
+        private void btnMaxGrade_Click(object sender, RoutedEventArgs e)
+        {
+            int i = cbxSaves.SelectedIndex;
+            save.Saves[i].Grade = 9999.00;
+            save.Saves[i].MaxGrade = 9999.00;
+            UpdateSaveString(save.Saves[i]);
+            UpdateStats(save.Saves[i]);
+            lblMaxGrade.Content = "Set grade to 9,999.0";
+        }
+
+        private void btnMaxItems_Click(object sender, RoutedEventArgs e)
+        {
+            int i = cbxSaves.SelectedIndex;
+            byte q = 1;
+            for (int n = 0; n < save.Saves[i].Items.Length; n++)
+            {
+                /* 50, skip 24 key items, 198
+                if (n > 50 && n < 74)
+                    saves[i].Items[n] = 1;
+                else
+                    saves[i].Items[n] = 20;
+                */
+                save.Saves[i].Items[n] = q++;
+                if (q > 20) q = 1;
+            }
+            UpdateSaveString(save.Saves[i]);
+            UpdateItems(save.Saves[i]);
+            lblMaxItems.Content = "Set all items to 20, and some key items to 1";
+        }
+
+        private void btnMaxTechs_Click(object sender, RoutedEventArgs e)
+        {
+            int i = cbxSaves.SelectedIndex;
+            for (int c = 0; c < 9; c++)
+            {
+                for (int t = 0; t < save.Saves[i].Characters[c].TechUses.Length; t++)
+                {
+                    save.Saves[i].Characters[c].TechUses[t] = 999;
+                }
+            }
+            UpdateSaveString(save.Saves[i]);
+            lblMaxTechs.Content = "Set all tech uses to 999";
+        }
+
+        private void btnFixChecksum_Click(object sender, RoutedEventArgs e)
+        {
+            int i = cbxSaves.SelectedIndex;
+            save.CalculateChecksum(i);
+
+            if (save.Saves[i].Checksum1 == save.Checksum1 && save.Saves[i].Checksum2 == save.Checksum2)
+                lblFixChecksum.Content = "Checksums OK";
+            else
+            {
+                lblFixChecksum.Content = string.Format("Expected: {0:X2}{1:X2}", save.Checksum1, save.Checksum2);
+                StringBuilder sb = new StringBuilder();
+                sb.AppendLine("Invalid Checksums.");
+                if (save.Saves[i].Checksum1 != save.Checksum1)
+                    sb.AppendFormat("1. Found: {0:X2} Expected: {1:X2}\r\n", save.Saves[i].Checksum1, save.Checksum1);
+                else
+                    sb.AppendLine("1. Checksum OK");
+                if (save.Saves[i].Checksum2 != save.Checksum2)
+                    sb.AppendFormat("2. Found: {0:X2} Expected: {1:X2}\r\n", save.Saves[i].Checksum2, save.Checksum2);
+                else
+                    sb.AppendLine("2. Checksum OK");
+                sb.AppendLine();
+                sb.Append("Your checksum will be generated on saving, so edit whatever else you wish, then hit save to fix checksum automatically.");
+                MessageBox.Show(sb.ToString(), "Checksum Mismatch");
+            }
+        }
+
+        private void btnAllTitles_Click(object sender, RoutedEventArgs e)
+        {
+            int i = cbxSaves.SelectedIndex;
+
+            save.Saves[i].Characters[0].Titles = new byte[] { 0xFE,0xE7,0xFF,0x1F}.ToBoolArray();
+            save.Saves[i].Characters[1].Titles = new byte[] { 0xFE,0xFF,0x3F,0x00}.ToBoolArray();
+            save.Saves[i].Characters[2].Titles = new byte[] { 0xFE,0xFF,0x1F,0x00}.ToBoolArray();
+            save.Saves[i].Characters[3].Titles = new byte[] { 0xFE,0xFF,0x03,0x00}.ToBoolArray();
+            save.Saves[i].Characters[4].Titles = new byte[] { 0xFE,0xFF,0x03,0x00}.ToBoolArray();
+            save.Saves[i].Characters[5].Titles = new byte[] { 0xFE,0xFF,0x01,0x00}.ToBoolArray();
+            save.Saves[i].Characters[6].Titles = new byte[] { 0xFE,0xFF,0x00,0x00}.ToBoolArray();
+            save.Saves[i].Characters[7].Titles = new byte[] { 0xFE,0xFF,0x00,0x00}.ToBoolArray();
+            save.Saves[i].Characters[8].Titles = new byte[] { 0xFE,0x07,0x00,0x00}.ToBoolArray();
+            
+            UpdateSaveString(save.Saves[i]);
+            lblAllTitles.Content = "All titles unlocked.";
+        }
+
+        private void btnAllTechs_Click(object sender, RoutedEventArgs e)
+        {
+            int i = cbxSaves.SelectedIndex;
+
+            save.Saves[i].Characters[0].Techs = new byte[]{0xFF,0xFF,0xFF,0xFF,0x07}.ToBoolArray();
+            save.Saves[i].Characters[1].Techs = new byte[]{0xFF,0xAF,0x8F,0x0F,0x00}.ToBoolArray();
+            save.Saves[i].Characters[2].Techs = new byte[]{0xFF,0xFF,0xFF,0xFF,0x09}.ToBoolArray();
+            save.Saves[i].Characters[3].Techs = new byte[]{0xFF,0xFF,0xFF,0x04,0x00}.ToBoolArray();
+            save.Saves[i].Characters[4].Techs = new byte[]{0xFF,0xFF,0xFF,0xFF,0x0F}.ToBoolArray();
+            save.Saves[i].Characters[5].Techs = new byte[]{0xFF,0x9F,0xFF,0x17,0x00}.ToBoolArray();
+            save.Saves[i].Characters[6].Techs = new byte[]{0xEF,0xDF,0x6F,0x00,0x00}.ToBoolArray();
+            save.Saves[i].Characters[7].Techs = new byte[]{0x7F,0xFE,0x2F,0x06,0x00}.ToBoolArray();
+            save.Saves[i].Characters[8].Techs = new byte[]{0xFF,0x9F,0xFF,0x17,0x00}.ToBoolArray();
+
+            UpdateSaveString(save.Saves[i]);
+            lblAllTechs.Content = "All techs unlocked.";
+        }
+
+        private void btnMaxCooking_Click(object sender, RoutedEventArgs e)
+        {
+            int i = cbxSaves.SelectedIndex;
+
+            for (int n = 0; n < 9; n++)
+            {
+                for (int c = 0; c < 24; c++)
+                {
+                    save.Saves[i].Characters[n].Cooking[c] = 8;
+                }
+            }
+
+            UpdateSaveString(save.Saves[i]);
+            lblMaxCooking.Content = "Cooking maxed.";
+        }
+
+        private void btnSave_Click(object sender, RoutedEventArgs e)
+        {
+            SaveFile();
+        }
+
+        private void sldItemQty_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if (codeControl)
+                return;
+            int i = cbxSaves.SelectedIndex;
+            save.Saves[i].Items[currentItem] = (byte)sldItemQty.Value;
+            lbxItems.Items[currentItem] = string.Format("{0} : {1}", Globals.ItemNames[saveType][currentItem], save.Saves[i].Items[currentItem]);
+            UpdateSaveString(save.Saves[i]);
+        }
+
+        private void lbxItems_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (cbxSaves.SelectedIndex < 0 || lbxItems.SelectedIndex < 0)
+                return;
+            codeControl = true;
+            currentItem = lbxItems.SelectedIndex;
+            sldItemQty.Value = save.Saves[cbxSaves.SelectedIndex].Items[lbxItems.SelectedIndex];
+            codeControl = false;
+        }
+        #endregion
+
+        #region Old Code
+
+        /*private void OpenPS3Save(string[] filenames)
         {
             btnFixChecksum.IsEnabled = false;
             if (unencrypted)
-                fileData = File.ReadAllBytes(filenames[0]);
+                bytes = File.ReadAllBytes(filenames[0]);
             else
             {
                 filename = filenames.Where(f => f.EndsWith("SAVEDATA.BIN")).FirstOrDefault();
@@ -119,25 +688,25 @@ namespace SymphoniaSaveEdit
                 //get file entry using name
                 Ps3File file = manager.Files.FirstOrDefault(t => t.PFDEntry.file_name == "SAVEDATA.BIN");
                 //define byte array that the decrypted data should be allocated
-                fileData = null;
+                bytes = null;
                 //check if file is not null
                 if (file != null)
-                    fileData = file.DecryptToBytes();
-                if (fileData != null)
+                    bytes = file.DecryptToBytes();
+                if (bytes != null)
                 {
                     cbxSaves.Items.Clear();
-                    saves = new List<SaveFile>();
+                    //saves = new List<GameSave>();
 
                     //do stuff with the decrypted data
                     StreamWriter sw = new StreamWriter("Converted.bin");
                     BinaryWriter bw = new BinaryWriter(sw.BaseStream);
-                    bw.Write(fileData);
+                    bw.Write(bytes);
                     bw.Close();
                 }
             }
 
-            BinaryReader br = new BinaryReader(new MemoryStream(fileData));
-            SaveFile save = new SaveFile();
+            BinaryReader br = new BinaryReader(new MemoryStream(bytes));
+            GameSave save = new GameSave();
 
             littleEndian = true; // Gamesave is little Endian, so we need to switch it even for .SAV files
 
@@ -317,7 +886,7 @@ namespace SymphoniaSaveEdit
 
             // Items
             br.BaseStream.Seek(0x1086, SeekOrigin.Begin);
-            for (int i = 0; i < Globals.ItemNames.Count; i++)
+            for (int i = 0; i < Globals.ItemNames[saveType].Length; i++)
                 save.Items[i] = br.ReadByte();
 
             // Collector's Book
@@ -361,27 +930,33 @@ namespace SymphoniaSaveEdit
             save.Grade = ReverseUInt(br.ReadBytes(4)) / 100.0; // grade used?
 
             cbxSaves.Items.Add("PS3 Save");
-            saves.Add(save);
-        }
+            //saves.Add(save);
+        }*/
 
-        private void OpenPCSave(string filename)
+        /*private void OpenRawSave(string filename)
         {
-            btnFixChecksum.IsEnabled = false;
+            if (saveType != SaveType.PS4)
+                btnFixChecksum.IsEnabled = false;
 
             cbxSaves.Items.Clear();
-            saves = new List<SaveFile>();
+            //saves = new List<GameSave>();
+
+            bytes = File.ReadAllBytes(filename);
 
             StreamReader sr = new StreamReader(filename);
             BinaryReader br = new BinaryReader(sr.BaseStream);
 
-            SaveFile save = new SaveFile();
+            GameSave save = new GameSave(saveType);
             littleEndian = false;
 
+            save.Checksum1 = ReverseUInt(br.ReadBytes(4));
+            save.Checksum2 = ReverseUInt(br.ReadBytes(4));
             br.BaseStream.Seek(0x10, SeekOrigin.Begin);
             save.GameTime = new GameTime(ReverseUInt(br.ReadBytes(4)));
             save.Gald = ReverseUInt(br.ReadBytes(4));
             save.Encounters = ReverseUShort(br.ReadBytes(2));
             save.Combo = ReverseUShort(br.ReadBytes(2));
+            // read party here as well (only for save header?)
             br.BaseStream.Seek(0x10, SeekOrigin.Current);
 
             // Records
@@ -413,7 +988,7 @@ namespace SymphoniaSaveEdit
                 save.MonsterList[i] = br.ReadByte();
 
             // Characters
-            br.BaseStream.Seek(0x548, SeekOrigin.Begin);
+            SeekTo(br, 0x548);
             for (int i = 0; i < 9; i++)
             {
                 save.Characters[i].Level = br.ReadByte();
@@ -473,7 +1048,7 @@ namespace SymphoniaSaveEdit
 
             byte flags;
             // Dogs
-            br.BaseStream.Seek(0xFB4, SeekOrigin.Begin);
+            SeekTo(br, 0xFB4);
             for (int x = 0; x < 5; x++)
             {
                 flags = br.ReadByte();
@@ -497,7 +1072,7 @@ namespace SymphoniaSaveEdit
             }
 
             // Women
-            br.BaseStream.Seek(0x1004, SeekOrigin.Begin);
+            SeekTo(br, 0x1004);
             for (int x = 0; x < 4; x++)
             {
                 flags = br.ReadByte();
@@ -520,7 +1095,7 @@ namespace SymphoniaSaveEdit
             save.Gigolo[32] = (br.ReadByte() & 1) == 1;
 
             // Treasure
-            br.BaseStream.Seek(0x109E, SeekOrigin.Begin);
+            SeekTo(br, 0x109E);
             flags = br.ReadByte();
             save.Treasure[0] = (flags & 4) == 4;
             save.Treasure[1] = (flags & 8) == 8;
@@ -547,27 +1122,27 @@ namespace SymphoniaSaveEdit
             flags = br.ReadByte();
             save.Treasure[270] = (flags & 1) == 1;
 
-            br.BaseStream.Seek(0x111d, SeekOrigin.Begin);
+            SeekTo(br, 0x111D);
             for (int i = 0; i < 8; i++)
                 save.Party[i] = br.ReadByte();
 
             // Items
-            br.BaseStream.Seek(0x112E, SeekOrigin.Begin);
-            for (int i = 0; i < Globals.ItemNames.Count; i++)
+            SeekTo(br, 0x112E);
+            for (int i = 0; i < Globals.ItemNames[saveType].Length; i++)
                 save.Items[i] = br.ReadByte();
 
             // Collector's Book
-            br.BaseStream.Seek(0x13a4, SeekOrigin.Begin);
+            SeekTo(br, 0x13a4);
             for (int i = 0; i < 0x43; i++)
                 save.CollectorsBook[i] = br.ReadByte();
 
-            br.BaseStream.Seek(0x1caf, SeekOrigin.Begin);// maybe 1cb0 but fat chance
+            SeekTo(br, 0x1CAF); // maybe 1cb0 but fat chance
             save.Recipes = ReverseBytes(br.ReadBytes(4)).ToBoolArray();
             br.ReadBytes(7);
             save.EncounterMode = br.ReadByte();
 
             // Battles
-            br.BaseStream.Seek(0x1cd6, SeekOrigin.Begin);
+            SeekTo(br, 0x1CD6);
             for (int i = 0; i < 9; i++)
                 save.Characters[i].CurrentBattles = ReverseUShort(br.ReadBytes(2));
 
@@ -581,7 +1156,7 @@ namespace SymphoniaSaveEdit
             save.HardModeBattles = ReverseUShort(br.ReadBytes(2));
 
             // Deaths
-            br.BaseStream.Seek(0x1d04, SeekOrigin.Begin);
+            SeekTo(br, 0x1D04);
             for (int i = 0; i < 9; i++)
                 save.Characters[i].Deaths = br.ReadByte();
             // Battle Items Used
@@ -598,22 +1173,38 @@ namespace SymphoniaSaveEdit
             }
 
             // Grade 0x1d84
-            br.BaseStream.Seek(0x1dc4, SeekOrigin.Begin); // -4 spent
+            SeekTo(br, 0x1DC4); // -4 spent
             save.Grade = ReverseUInt(br.ReadBytes(4)) / 100.0;
 
-            cbxSaves.Items.Add("PC Save");
-            saves.Add(save);
-        }
+            switch (saveType)
+            {
+                case SaveType.PCRaw:
+                    cbxSaves.Items.Add("PC Save");
+                    break;
+                case SaveType.Switch:
+                    cbxSaves.Items.Add("Switch Save");
+                    break;
+                case SaveType.PS4:
+                    cbxSaves.Items.Add("PS4 Save");
+                    break;
+                default:
+                    cbxSaves.Items.Add("Raw Save");
+                    break;
+            }
+            //saves.Add(save);
+        }*/
 
-        private void OpenSaveFile(string filename)
+        /*private void OpenGCSave(string filename)
         {
             btnFixChecksum.IsEnabled = true;
+
+            bytes = File.ReadAllBytes(filename);
 
             StreamReader sr = new StreamReader(filename);
             BinaryReader br = new BinaryReader(sr.BaseStream);
 
             cbxSaves.Items.Clear();
-            saves = new List<SaveFile>();
+            saves = new List<GameSave>();
             string extension = System.IO.Path.GetExtension(filename).ToUpper();
             switch (extension)
             {
@@ -634,7 +1225,6 @@ namespace SymphoniaSaveEdit
                     break;
             }
 
-            byte[] bytes = br.ReadBytes((int)br.BaseStream.Length);
             uint check1 = 0, check2 = 0;
             CalculateChecksum(bytes, offset, out check1, out check2);
 
@@ -643,7 +1233,7 @@ namespace SymphoniaSaveEdit
             bool regionPrompted = false;
             while (br.BaseStream.Position < br.BaseStream.Length)
             {
-                SaveFile save = new SaveFile();
+                GameSave save = new GameSave();
 
                 string id = Encoding.Default.GetString(br.ReadBytes(3));
                 byte region = br.ReadByte();
@@ -833,7 +1423,7 @@ namespace SymphoniaSaveEdit
                     save.Party[i] = br.ReadByte();
 
                 br.BaseStream.Seek(0x9, SeekOrigin.Current);
-                for (int i = 0; i < Globals.ItemNames.Count; i++)
+                for (int i = 0; i < Globals.ItemNames[saveType].Length; i++)
                 {
                     save.Items[i] = br.ReadByte();
                 }
@@ -889,17 +1479,10 @@ namespace SymphoniaSaveEdit
             }
 
             br.Close();
-        }
+        }*/
 
-        private void WriteSaveFile(string filename)
+        /*private void WriteGCSave(string filename)
         {
-            StreamReader sr = new StreamReader(filename);
-            BinaryReader br = new BinaryReader(sr.BaseStream);
-            byte[] bytes = br.ReadBytes((int)br.BaseStream.Length);
-            br.Close();
-            br.Dispose();
-            sr.Dispose();
-
             MemoryStream ms = new MemoryStream(bytes);
             BinaryWriter bw = new BinaryWriter(ms);
 
@@ -925,7 +1508,7 @@ namespace SymphoniaSaveEdit
 
             bw.BaseStream.Seek(offset, SeekOrigin.Begin);
 
-            SaveFile save = saves[cbxSaves.SelectedIndex];
+            GameSave save = saves[cbxSaves.SelectedIndex];
 
             bw.BaseStream.Seek(0x2080, SeekOrigin.Current);
             bw.Write((uint)0);
@@ -1086,7 +1669,7 @@ namespace SymphoniaSaveEdit
                 bw.Write(save.Party[i]);
 
             bw.BaseStream.Seek(0x9, SeekOrigin.Current);
-            for (int i = 0; i < Globals.ItemNames.Count; i++)
+            for (int i = 0; i < Globals.ItemNames[saveType].Length; i++)
                 bw.Write(save.Items[i]);
 
             bw.BaseStream.Seek(0x6d, SeekOrigin.Current);
@@ -1135,21 +1718,22 @@ namespace SymphoniaSaveEdit
             bw = new BinaryWriter(sw.BaseStream);
             bw.Write(ms.ToArray());
             bw.Close();
-        }
+        }*/
 
-        private void WritePCSave(string filename)
+        /*private void WriteRawSave(string filename)
         {
-            StreamReader sr = new StreamReader(filename);
-            BinaryReader br = new BinaryReader(sr.BaseStream);
-            byte[] bytes = br.ReadBytes((int)br.BaseStream.Length);
-            br.Close();
-            br.Dispose();
-            sr.Dispose();
-
             MemoryStream ms = new MemoryStream(bytes);
             BinaryWriter bw = new BinaryWriter(ms);
 
-            SaveFile save = saves[cbxSaves.SelectedIndex];
+            GameSave save = saves[cbxSaves.SelectedIndex];
+
+            // Saves that use checksum header
+            if (saveType == SaveType.PS4)
+            {
+                bw.Seek(0, SeekOrigin.Begin);
+                bw.Write((uint)0);
+                bw.Write((uint)0);
+            }
 
             bw.BaseStream.Seek(0x10, SeekOrigin.Begin);
             bw.Write((uint)(save.GameTime.TotalFrames));
@@ -1188,7 +1772,7 @@ namespace SymphoniaSaveEdit
 
             // Characters
             byte[] work;
-            bw.BaseStream.Seek(0x548, SeekOrigin.Begin);
+            SeekTo(bw, 0x548);
             for (int i = 0; i < 9; i++)
             {
                 bw.Write(save.Characters[i].Level);
@@ -1246,7 +1830,7 @@ namespace SymphoniaSaveEdit
 
             byte flags;
             // Dogs
-            bw.BaseStream.Seek(0xFB4, SeekOrigin.Begin);
+            SeekTo(bw, 0xFB4);
             for (int x = 0; x < 5; x++)
             {
                 flags = 0;
@@ -1262,7 +1846,7 @@ namespace SymphoniaSaveEdit
             }
 
             // Women
-            bw.BaseStream.Seek(0x1004, SeekOrigin.Begin);
+            SeekTo(bw, 0x1004);
             for (int x = 0; x < 4; x++)
             {
                 flags = 0;
@@ -1278,7 +1862,7 @@ namespace SymphoniaSaveEdit
             }
 
             // Treasure
-            bw.BaseStream.Seek(0x109E, SeekOrigin.Begin);
+            SeekTo(bw, 0x109E);
             flags = 0;
             flags += save.Treasure[0] == true ? (byte)4 : (byte)0;
             flags += save.Treasure[1] == true ? (byte)8 : (byte)0;
@@ -1307,33 +1891,34 @@ namespace SymphoniaSaveEdit
             bw.Write(flags);
 
             // Party
-            bw.BaseStream.Seek(0x111d, SeekOrigin.Begin);
+            SeekTo(bw, 0x111d);
             for (int i = 0; i < 8; i++)
                 bw.Write(save.Party[i]);
 
             // Items
-            bw.BaseStream.Seek(0x112E, SeekOrigin.Begin);
-            for (int i = 0; i < Globals.ItemNames.Count; i++)
+            SeekTo(bw, 0x112E);
+            for (int i = 0; i < Globals.ItemNames[saveType].Length; i++)
                 bw.Write(save.Items[i]);
 
             // Collector's Book
-            bw.BaseStream.Seek(0x13a4, SeekOrigin.Begin);
+            SeekTo(bw, 0x13a4);
             for (int i = 0; i < 0x43; i++)
                 bw.Write(save.CollectorsBook[i]);
 
-            bw.BaseStream.Seek(0x1caf, SeekOrigin.Begin);// maybe 1cb0 but fat chance
+            SeekTo(bw, 0x1caf);// maybe 1cb0 but fat chance
             bw.Write(save.Recipes.To4ByteArray(false));
             bw.BaseStream.Seek(7, SeekOrigin.Current);
             bw.Write(save.EncounterMode);
 
             // Battles
-            bw.BaseStream.Seek(0x1cd6, SeekOrigin.Begin);
+            SeekTo(bw, 0x1cd6);
             for (int i = 0; i < 9; i++)
                 bw.Write(save.Characters[i].CurrentBattles);
 
             // HardMode
             bw.Write(save.UnisonGauge);
             bw.BaseStream.Seek(2, SeekOrigin.Current);
+            // 1 = ? saw in Noxbur's save
             byte flag = 0;
             flag += save.GelsUsed ? (byte)8 : (byte)0;
             flag += save.HaveDied ? (byte)2 : (byte)0;
@@ -1342,7 +1927,7 @@ namespace SymphoniaSaveEdit
             bw.Write(save.HardModeBattles);
 
             // Deaths
-            bw.BaseStream.Seek(0x1d04, SeekOrigin.Begin);
+            SeekTo(bw, 0x1d04);
             for (int i = 0; i < 9; i++)
                 bw.Write(save.Characters[i].Deaths);
             // Battle Items Used
@@ -1359,22 +1944,31 @@ namespace SymphoniaSaveEdit
             }
 
             // Grade
-            bw.BaseStream.Seek(0x1dc4, SeekOrigin.Begin);
+            SeekTo(bw, 0x1dc4);
             bw.Write((uint)(save.Grade * 100));
+
+            // Checksum
+            uint check1 = 0;
+            uint check2 = 0;
+            CalculateChecksum(bytes, offset, out check1, out check2);
+            bw.BaseStream.Seek(0 + offset, SeekOrigin.Begin);
+            bw.Write(check1);
+            bw.Write(check2);
+
             bw.Close();
 
             StreamWriter sw = new StreamWriter(filename);
             bw = new BinaryWriter(sw.BaseStream);
             bw.Write(ms.ToArray());
             bw.Close();
-        }
+        }*/
 
-        private void WritePS3Save(string filename)
+        /*private void WritePS3Save(string filename)
         {
             MemoryStream ms = new MemoryStream(fileData);
             BinaryWriter bw = new BinaryWriter(ms);
 
-            SaveFile save = saves[cbxSaves.SelectedIndex];
+            GameSave save = saves[cbxSaves.SelectedIndex];
 
             bw.BaseStream.Seek(0x10, SeekOrigin.Begin);
             bw.WriteReverse((uint)(save.GameTime.TotalFrames));
@@ -1542,7 +2136,7 @@ namespace SymphoniaSaveEdit
 
             // Items
             bw.BaseStream.Seek(0x1086, SeekOrigin.Begin);
-            for (int i = 0; i < Globals.ItemNames.Count; i++)
+            for (int i = 0; i < Globals.ItemNames[saveType].Length; i++)
                 bw.Write(save.Items[i]);
 
             // Collector's Book
@@ -1613,21 +2207,25 @@ namespace SymphoniaSaveEdit
                 else
                     MessageBox.Show("Error encrypting data to PS3 format.");
             }
-        }
+        }*/
 
-        private void CalculateChecksum(byte[] bytes, int offset, out uint check1, out uint check2)
+        /*private void CalculateChecksum(byte[] bytes, int offset, out uint check1, out uint check2)
         {
             check1 = 0;
             check2 = 0;
-            int start = 0x2080 + offset;
+            bool reverse = saveType == SaveType.GC;
+            int size = saveType == SaveType.GC ? 0xa75 : 0x985;
+            int start = offset;
+            if (saveType == SaveType.GC)
+                start += 0x2080;
 
             uint work = 0;
             byte[] array = new byte[4];
             // Calculate Checksum 1
-            for (int i = 0; i < 0xa75; i++)
+            for (int i = 0; i < size; i++)
             {
                 Array.Copy(bytes, start + i * 4, array, 0, 4);
-                Array.Reverse(array);
+                if (reverse) Array.Reverse(array);
                 work = BitConverter.ToUInt32(array, 0);
                 if (i < 2)
                     work = 0;
@@ -1638,7 +2236,7 @@ namespace SymphoniaSaveEdit
             for (int i = 0; i < 100; i++)
             {
                 Array.Copy(bytes, start + i * 4, array, 0, 4);
-                Array.Reverse(array);
+                if (reverse) Array.Reverse(array);
                 work = BitConverter.ToUInt32(array, 0);
                 if (i < 2)
                     work = 0;
@@ -1647,589 +2245,8 @@ namespace SymphoniaSaveEdit
 
             //check1 = ReverseBytes(check1);
             //check2 = ReverseBytes(check2);
-        }
+        }*/
 
-        public static UInt32 ReverseBytes(UInt32 value)
-        {
-            return (value & 0x000000FFU) << 24 | (value & 0x0000FF00U) << 8 |
-                (value & 0x00FF0000U) >> 8 | (value & 0xFF000000U) >> 24;
-        }
-
-        private int ReverseInt(byte[] bytes)
-        {
-            if(littleEndian)
-                Array.Reverse(bytes);
-            return BitConverter.ToInt32(bytes, 0);
-        }
-
-        private uint ReverseUInt(byte[] bytes)
-        {
-            if (littleEndian)
-                Array.Reverse(bytes);
-            return BitConverter.ToUInt32(bytes, 0);
-        }
-
-        private short ReverseShort(byte[] bytes)
-        {
-            if(littleEndian)
-                Array.Reverse(bytes);
-            return BitConverter.ToInt16(bytes, 0);
-        }
-
-        private ushort ReverseUShort(byte[] bytes)
-        {
-            if(littleEndian)
-                Array.Reverse(bytes);
-            return BitConverter.ToUInt16(bytes, 0);
-        }
-
-        private byte[] ReverseBytes(byte[] bytes)
-        {
-            if (littleEndian)
-                Array.Reverse(bytes);
-            return bytes;
-        }
-
-        private void cbxSaves_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            GetData();
-
-            switch (tabControl.SelectedIndex)
-            {
-                case 0:
-                    ShowTreasure();
-                    break;
-                case 1:
-                    ShowWomen();
-                    break;
-                case 2:
-                    ShowDogs();
-                    break;
-                case 3:
-                    ShowItems();
-                    break;
-            }
-
-        }
-
-        private void ShowItems()
-        {
-            if (cbxSaves.SelectedIndex < 0)
-                return;
-
-            if (saves.Count < cbxSaves.SelectedIndex + 1)
-                return;
-
-            SaveFile save = saves[cbxSaves.SelectedIndex];
-
-            int items = save.Items.Count(i => i > 0);
-            lblTotal.Content = string.Format("Items: {0}/{1} ({2:n1}%)", items, itemCount, Math.Truncate(items * 100.0 / itemCount * 10) / 10);
-            pbTotal.Visibility = System.Windows.Visibility.Visible;
-            pbTotal.Maximum = itemCount;
-            pbTotal.Value = items;
-        }
-
-        private void ShowDogs()
-        {
-            if (cbxSaves.SelectedIndex < 0)
-                return;
-
-            if (saves.Count < cbxSaves.SelectedIndex + 1)
-                return;
-
-            SaveFile save = saves[cbxSaves.SelectedIndex];
-
-            int dogs = save.DogLover.Count(d => d == true);
-            lblTotal.Content = string.Format("Dogs: {0}/{1} ({2:n1}%)", dogs, dogCount, Math.Truncate(dogs * 100.0 / dogCount * 10) / 10);
-            pbTotal.Visibility = System.Windows.Visibility.Visible;
-            pbTotal.Maximum = dogCount;
-            pbTotal.Value = dogs;
-        }
-
-        private void ShowWomen()
-        {
-            if (cbxSaves.SelectedIndex < 0)
-                return;
-
-            if (saves.Count < cbxSaves.SelectedIndex + 1)
-                return;
-
-            SaveFile save = saves[cbxSaves.SelectedIndex];
-
-            int women = save.Gigolo.Count(g => g == true);
-            lblTotal.Content = string.Format("Women: {0}/{1} ({2:n1}%)", women, womenCount, Math.Truncate(women * 100.0 / womenCount * 10) / 10);
-            pbTotal.Visibility = System.Windows.Visibility.Visible;
-            pbTotal.Maximum = womenCount;
-            pbTotal.Value = women;
-        }
-
-        private void ShowTreasure()
-        {
-            if (cbxSaves.SelectedIndex < 0)
-                return;
-
-            if (saves.Count < cbxSaves.SelectedIndex + 1)
-                return;
-
-            SaveFile save = saves[cbxSaves.SelectedIndex];
-
-            int treasures = save.Treasure.Count(t => t == true);
-            lblTotal.Content = string.Format("Treasures: {0}/{1} ({2:n1}%)", treasures, treasureCount, Math.Truncate(treasures * 100.0 / treasureCount * 10) / 10);
-            pbTotal.Visibility = System.Windows.Visibility.Visible;
-            pbTotal.Maximum = treasureCount;
-            pbTotal.Value = treasures;
-        }
-
-        private void GetData()
-        {
-            if (cbxSaves.SelectedIndex < 0)
-                return;
-
-            if (saves.Count < cbxSaves.SelectedIndex + 1)
-                return;
-
-            SaveFile save = saves[cbxSaves.SelectedIndex];
-            lblLastModified.Content = save.LastModified.ToString();
-            //lblChecksum.Content = save.Checksum1.ToString("X2");
-
-            UpdateCounts(save);
-
-            UpdateStats(save);
-
-            UpdateItems(save);
-
-            UpdateSaveString(save);
-        }
-
-        private void UpdateItems(SaveFile save)
-        {
-            lbxItems.Items.Clear();
-            for (int i = 0; i < save.Items.Length; i++)
-            {
-                lbxItems.Items.Add(string.Format("{0} : {1}", Globals.ItemNames[i], save.Items[i]));
-            }
-        }
-
-        private void UpdateStats(SaveFile save)
-        {
-            // Stats
-            StringBuilder sb = new StringBuilder();
-            sb.AppendFormat("Checksum1: {0:X2}\r\n", save.Checksum1);
-            sb.AppendFormat("Checksum2: {0:X2}\r\n", save.Checksum2);
-            sb.AppendLine();
-            sb.Append("Party: ");
-            for (int i = 0; i < 8; i++)
-            {
-                if (save.Party[i] != 0)
-                {
-                    if (save.Party[i] < Globals.CharacterNames.Length)
-                        sb.AppendLine(Globals.CharacterNames[save.Party[i]-1]);
-                    else
-                        sb.AppendLine("Unknown");
-                }
-            }
-            sb.AppendLine();
-            sb.AppendLine("Common Data");
-            sb.AppendLine(string.Format("Max Play Time: {0}", save.MaxGameTime.ToString()));
-            sb.AppendLine(string.Format("Max Gald: {0:n0}", save.MaxGald));
-            sb.AppendLine(string.Format("Total Gald Used: {0:n0}", save.TotalGaldUsed));
-            sb.AppendLine(string.Format("Saves: {0:n0}", save.Saves));
-            sb.AppendLine(string.Format("Game Cleared: {0}", save.GameCleared));
-            sb.AppendLine();
-            sb.AppendLine("Battle Record");
-            sb.AppendLine(string.Format("Encounters: {0:n0}", save.MaxEncounters));
-            sb.AppendLine(string.Format("Escapes: {0:n0}", save.Escapes));
-            sb.AppendLine(string.Format("Max Combo: {0} hit", save.MaxCombo));
-            sb.AppendLine(string.Format("Max Damage: {0:n0}", save.MaxDmg));
-            sb.AppendLine(string.Format("Max Grade: {0:n2}", save.MaxGrade));
-            sb.AppendLine();
-            sb.AppendLine("Current");
-            sb.AppendLine(string.Format("Game Time: {0}", save.GameTime.ToString()));
-            sb.AppendLine(string.Format("Gald: {0:n0}", save.Gald));
-            sb.AppendLine(string.Format("Encounters: {0:n0}", save.Encounters));
-            sb.AppendLine(string.Format("Combo: {0} hit", save.MaxCombo));
-            sb.AppendLine(string.Format("Grade: {0:n2}", save.Grade));
-            sb.AppendLine();
-            sb.AppendLine(string.Format("Battles: {0:n0}", save.Battles));
-            for (int i = 0; i < 9; i++)
-            {
-                sb.AppendFormat("{0} Battles: {1:n0}\r\n", save.Characters[i].Name, save.Characters[i].Battles);
-            }
-            sb.AppendLine();
-            for (int i = 0; i < 9; i++)
-            {
-                sb.AppendFormat("{0} Kills: {1:n0}\r\n", save.Characters[i].Name, save.Characters[i].Kills);
-            }
-            sb.AppendLine();
-            //sb.AppendLine(save.TreasureString);
-            lblInfo.Text = sb.ToString();
-            sb = null;
-        }
-
-        private void UpdateCounts(SaveFile save)
-        {
-            // Treasure
-            lbxTreasures.Items.Clear();
-            for (int x = 0; x < save.Treasure.Length; x++)
-            {
-                if (!save.Treasure[x] && x != 239)
-                    lbxTreasures.Items.Add(string.Format("{0}: {1}", x + 1, Globals.TreasureNames[x]));
-            }
-
-            // Gigolo
-            lbxWomen.Items.Clear();
-            for (int x = 0; x < save.Gigolo.Length; x++)
-            {
-                if (!save.Gigolo[x] && Globals.WomenNames[x] != "None")
-                    lbxWomen.Items.Add(string.Format("{0}: {1}", x + 1, Globals.WomenNames[x]));
-            }
-
-            // Dog Lover
-            lbxDogs.Items.Clear();
-            for (int x = 0; x < save.DogLover.Length; x++)
-            {
-                if (!save.DogLover[x] && Globals.DogNames[x] != "None")
-                    lbxDogs.Items.Add(string.Format("{0}: {1}", x + 1, Globals.DogNames[x]));
-            }
-        }
-
-        private void UpdateSaveString(SaveFile save)
-        {
-            //tbxJSON.Text = new JSonPresentationFormatter().Format(save);
-            tbxJSON.Text = JsonConvert.SerializeObject(save, Formatting.Indented);
-        }
-
-        private void Window_Loaded(object sender, RoutedEventArgs e)
-        {
-            treasureCount = (short)Globals.TreasureNames.Count(t => !t.Contains("None"));
-            itemCount = (short)Globals.ItemNames.Count(i => !i.Contains("None"));
-            dogCount = (short)Globals.DogNames.Count(d => !d.Contains("None"));
-            womenCount = (short)Globals.WomenNames.Count(w => !w.Contains("None"));
-        }
-
-        private void TabControl_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (tabControl.SelectedIndex == previousTab)
-                return;
-            previousTab = tabControl.SelectedIndex;
-            switch (tabControl.SelectedIndex)
-            {
-                case 1:
-                    ShowTreasure();
-                    break;
-                case 2:
-                    ShowWomen();
-                    break;
-                case 3:
-                    ShowDogs();
-                    break;
-                case 4:
-                    ShowItems();
-                    break;
-            }
-        }
-
-        private void cbxStatChar_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            StringBuilder sb = new StringBuilder();
-            SaveFile save = saves[cbxSaves.SelectedIndex];
-            int i = cbxStatChar.SelectedIndex;
-            sb.AppendFormat("Lvl: {0}\r\n", save.Characters[i].Level);
-            sb.AppendFormat("Exp: {0:n0}\r\n", save.Characters[i].Exp);
-            sb.AppendFormat("Status: {0:X2}\r\n", save.Characters[i].Status);
-            sb.AppendLine();
-            sb.AppendFormat("HP: {0}/{1}\r\n", save.Characters[i].HP, save.Characters[i].MaxHP);
-            sb.AppendFormat("TP: {0}/{1}\r\n", save.Characters[i].TP, save.Characters[i].MaxTP);
-            sb.AppendFormat("Str: {0:000}        Def: {1:000}\r\n", save.Characters[i].Str, save.Characters[i].Def);
-            sb.AppendFormat("{0}: {1:000}  Acc: {2:000}\r\n", i == 0 ? "Thrust" : "Atk", save.Characters[i].Atk, save.Characters[i].Acc);
-            sb.AppendFormat("{0}: {1:000}    Eva: {2:000}\r\n", i == 0 ? "Slash" : "Att", save.Characters[i].Atk2, save.Characters[i].Eva);
-            sb.AppendFormat("Int: {0:000}         Lck: {1:000}\r\n", save.Characters[i].Int, save.Characters[i].Lck);
-            sb.AppendLine();
-            sb.AppendFormat("Weapon: {0}\r\n", save.Characters[i].Weapon == 0 ? string.Empty : Globals.ItemNames[save.Characters[i].Weapon]);
-            sb.AppendFormat("Armor: {0}\r\n", save.Characters[i].Armor == 0 ? string.Empty : Globals.ItemNames[save.Characters[i].Armor]);
-            sb.AppendFormat("Helm: {0}\r\n", save.Characters[i].Helm == 0 ? string.Empty : Globals.ItemNames[save.Characters[i].Helm]);
-            sb.AppendFormat("Arms: {0}\r\n", save.Characters[i].Arms == 0 ? string.Empty : Globals.ItemNames[save.Characters[i].Arms]);
-            sb.AppendFormat("Accessory: {0}\r\n", save.Characters[i].Accessory1 == 0 ? string.Empty : Globals.ItemNames[save.Characters[i].Accessory1]);
-            sb.AppendFormat("Accessory: {0}\r\n", save.Characters[i].Accessory2 == 0 ? string.Empty : Globals.ItemNames[save.Characters[i].Accessory2]);
-            sb.AppendLine();
-            sb.AppendFormat("Overlimit: {0}%\r\n", save.Characters[i].Overlimit);
-            sb.AppendFormat("Affection: {0:n0}\r\n", save.Characters[i].Affection);
-
-            //uint uint32 = uint.Parse(save.Characters[i].Titles, System.Globalization.NumberStyles.HexNumber);
-            //byte[] bytes = Enumerable.Range(0, save.Characters[i].Titles.Length)
-            //                .Where(x => x % 2 == 0)
-            //                .Select(x => Convert.ToByte(save.Characters[i].Titles.Substring(x, 2), 16)).ToArray();
-            lbxTitles.Items.Clear();
-            for (int b = 0; b < save.Characters[i].Titles.Length; b++)
-            {
-                var c = new CheckBox() { Tag=b, Content = Globals.Titles[i, b], IsChecked = save.Characters[i].Titles[b], Foreground = Globals.WhiteBrush, Style = Resources["CheckBoxStyle"] as Style };
-                c.Checked += chkTitle_Checked;
-                c.Unchecked += chkTitle_Unchecked;
-                lbxTitles.Items.Add(c);
-            }
-
-            sb.AppendLine();
-            //var bytes = Enumerable.Range(0, save.Characters[i].Techs.Length)
-            //                .Where(x => x % 2 == 0)
-            //                .Select(x => Convert.ToByte(save.Characters[i].Techs.Substring(x, 2), 16)).ToArray();
-            lbxTechs.Items.Clear();
-            for (int b = 0; b < save.Characters[i].Techs.Length; b++)
-            {
-                var c = new CheckBox() { Tag=b, Content = Globals.Techs[i, b], IsChecked = save.Characters[i].Techs[b], Foreground = Globals.WhiteBrush, Style = Resources["CheckBoxStyle"] as Style };
-                c.Checked += chkTech_Checked;
-                c.Unchecked += chkTech_Unchecked;
-                lbxTechs.Items.Add(c);
-            }
-
-            tbxStats.Text = sb.ToString();
-        }
-
-        private void chkTech_Unchecked(object sender, RoutedEventArgs e)
-        {
-            var i = (int)((CheckBox)e.OriginalSource).Tag;
-            saves[cbxSaves.SelectedIndex].Characters[cbxStatChar.SelectedIndex].Techs[i] = false;
-            UpdateSaveString(saves[cbxSaves.SelectedIndex]);
-        }
-
-        private void chkTech_Checked(object sender, RoutedEventArgs e)
-        {
-            var i = (int)((CheckBox)e.OriginalSource).Tag;
-            saves[cbxSaves.SelectedIndex].Characters[cbxStatChar.SelectedIndex].Techs[i] = true;
-            UpdateSaveString(saves[cbxSaves.SelectedIndex]);
-        }
-
-        private void chkTitle_Checked(object sender, RoutedEventArgs e)
-        {
-            var i = (int)((CheckBox)e.OriginalSource).Tag;
-            saves[cbxSaves.SelectedIndex].Characters[cbxStatChar.SelectedIndex].Techs[i] = true;
-            UpdateSaveString(saves[cbxSaves.SelectedIndex]);
-        }
-
-        private void chkTitle_Unchecked(object sender, RoutedEventArgs e)
-        {
-            var i = (int)((CheckBox)e.OriginalSource).Tag;
-            saves[cbxSaves.SelectedIndex].Characters[cbxStatChar.SelectedIndex].Titles[i] = false;
-            UpdateSaveString(saves[cbxSaves.SelectedIndex]);
-        }
-
-        private void SaveFile()
-        {
-            if (saves.Count == 0 || cbxSaves.SelectedIndex > saves.Count - 1)
-                return;
-
-            SaveFile save = saves[cbxSaves.SelectedIndex];
-            try
-            {
-                save = JsonConvert.DeserializeObject<SaveFile>(tbxJSON.Text);
-                saves[cbxSaves.SelectedIndex] = save;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.ToString(), "Error Serializing Edit");
-                return;
-            }
-
-            if (filename.ToUpper().EndsWith(".BIN"))
-                WritePS3Save(filename);
-            else if (filename.ToUpper().EndsWith(".DAT"))
-                WritePCSave(filename);
-            else
-                WriteSaveFile(filename);
-
-            MessageBox.Show("Saved!");
-        }
-
-        private void btnSaveEdit_Click(object sender, RoutedEventArgs e)
-        {
-            SaveFile();
-        }
-
-        private void btnMaxGald_Click(object sender, RoutedEventArgs e)
-        {
-            int i = cbxSaves.SelectedIndex;
-            saves[i].Gald = 999999;
-            saves[i].GaldCurrent = 999999;
-            saves[i].MaxGald = 999999;
-            UpdateSaveString(saves[i]);
-            UpdateStats(saves[i]);
-            lblMaxGald.Content = "Set gald to 999,999";
-        }
-
-        private void btnMaxStats_Click(object sender, RoutedEventArgs e)
-        {
-            int i = cbxSaves.SelectedIndex;
-            for (int c = 0; c < 9; c++)
-            {
-                saves[i].Characters[c].Acc = 1999;
-                saves[i].Characters[c].Atk = 1999;
-                saves[i].Characters[c].Atk2 = 1999;
-                saves[i].Characters[c].Def = 1999;
-                saves[i].Characters[c].Eva = 1999;
-                saves[i].Characters[c].Exp = 999999;
-                saves[i].Characters[c].HP = 9999;
-                saves[i].Characters[c].Int = 1999;
-                saves[i].Characters[c].Lck = 1999;
-                saves[i].Characters[c].Level = 250;
-                saves[i].Characters[c].MaxHP = 9999;
-                saves[i].Characters[c].MaxTP = 999;
-                saves[i].Characters[c].Overlimit = 100;
-                saves[i].Characters[c].Status = 0;
-                saves[i].Characters[c].Str = 1999;
-                saves[i].Characters[c].TP = 999;
-            }
-            UpdateSaveString(saves[i]);
-            lblMaxStats.Content = "Set all characters stats to maximums";
-        }
-
-        private void btnMaxGrade_Click(object sender, RoutedEventArgs e)
-        {
-            int i = cbxSaves.SelectedIndex;
-            saves[i].Grade = 9999.00;
-            saves[i].MaxGrade = 9999.00;
-            UpdateSaveString(saves[i]);
-            UpdateStats(saves[i]);
-            lblMaxGrade.Content = "Set grade to 9,999.0";
-        }
-
-        private void btnMaxItems_Click(object sender, RoutedEventArgs e)
-        {
-            int i = cbxSaves.SelectedIndex;
-            for (int n = 0; n < saves[i].Items.Length; n++)
-            {
-                // 50, skip 24 key items, 198
-                if (n > 50 && n < 74)
-                    saves[i].Items[n] = 1;
-                else
-                    saves[i].Items[n] = 20;
-            }
-            UpdateSaveString(saves[i]);
-            UpdateItems(saves[i]);
-            lblMaxItems.Content = "Set all items to 20, and some key items to 1";
-        }
-
-        private void btnMaxTechs_Click(object sender, RoutedEventArgs e)
-        {
-            int i = cbxSaves.SelectedIndex;
-            for (int c = 0; c < 9; c++)
-            {
-                for (int t = 0; t < saves[i].Characters[c].TechUses.Length; t++)
-                {
-                    saves[i].Characters[c].TechUses[t] = 999;
-                }
-            }
-            UpdateSaveString(saves[i]);
-            lblMaxTechs.Content = "Set all tech uses to 999";
-        }
-
-        private void btnFixChecksum_Click(object sender, RoutedEventArgs e)
-        {
-            int i = cbxSaves.SelectedIndex;
-            StreamReader sr = new StreamReader(filename);
-            BinaryReader br = new BinaryReader(sr.BaseStream);
-            byte[] bytes = br.ReadBytes((int)br.BaseStream.Length);
-            br.Close();
-            br.Dispose();
-            sr.Dispose();
-
-            uint check1 = 0, check2 = 0;
-            CalculateChecksum(bytes, offset, out check1, out check2);
-
-            if (saves[i].Checksum1 == check1 && saves[i].Checksum2 == check2)
-                lblFixChecksum.Content = "Checksums OK";
-            else
-            {
-                lblFixChecksum.Content = string.Format("Expected: {0:X2}{1:X2}", check1, check2);
-                StringBuilder sb = new StringBuilder();
-                sb.AppendLine("Invalid Checksums.");
-                if (saves[i].Checksum1 != check1)
-                    sb.AppendFormat("1. Found: {0:X2} Expected: {1:X2}\r\n", saves[i].Checksum1, check1);
-                else
-                    sb.AppendLine("1. Checksum OK");
-                if (saves[i].Checksum2 != check2)
-                    sb.AppendFormat("2. Found: {0:X2} Expected: {1:X2}\r\n", saves[i].Checksum2, check2);
-                else
-                    sb.AppendLine("2. Checksum OK");
-                sb.AppendLine();
-                sb.Append("Your checksum will be generated on saving, so edit whatever else you wish, then hit save to fix checksum automatically.");
-                MessageBox.Show(sb.ToString(), "Checksum Mismatch");
-            }
-        }
-
-        private void btnAllTitles_Click(object sender, RoutedEventArgs e)
-        {
-            int i = cbxSaves.SelectedIndex;
-
-            saves[i].Characters[0].Titles = new byte[] { 0xFE,0xE7,0xFF,0x1F}.ToBoolArray();
-            saves[i].Characters[1].Titles = new byte[] { 0xFE,0xFF,0x3F,0x00}.ToBoolArray();
-            saves[i].Characters[2].Titles = new byte[] { 0xFE,0xFF,0x1F,0x00}.ToBoolArray();
-            saves[i].Characters[3].Titles = new byte[] { 0xFE,0xFF,0x03,0x00}.ToBoolArray();
-            saves[i].Characters[4].Titles = new byte[] { 0xFE,0xFF,0x03,0x00}.ToBoolArray();
-            saves[i].Characters[5].Titles = new byte[] { 0xFE,0xFF,0x01,0x00}.ToBoolArray();
-            saves[i].Characters[6].Titles = new byte[] { 0xFE,0xFF,0x00,0x00}.ToBoolArray();
-            saves[i].Characters[7].Titles = new byte[] { 0xFE,0xFF,0x00,0x00}.ToBoolArray();
-            saves[i].Characters[8].Titles = new byte[] { 0xFE,0x07,0x00,0x00}.ToBoolArray();
-            
-            UpdateSaveString(saves[i]);
-            lblAllTitles.Content = "All titles unlocked.";
-        }
-
-        private void btnAllTechs_Click(object sender, RoutedEventArgs e)
-        {
-            int i = cbxSaves.SelectedIndex;
-
-            saves[i].Characters[0].Techs = new byte[]{0xFF,0xFF,0xFF,0xFF,0x07}.ToBoolArray();
-            saves[i].Characters[1].Techs = new byte[]{0xFF,0xAF,0x8F,0x0F,0x00}.ToBoolArray();
-            saves[i].Characters[2].Techs = new byte[]{0xFF,0xFF,0xFF,0xFF,0x09}.ToBoolArray();
-            saves[i].Characters[3].Techs = new byte[]{0xFF,0xFF,0xFF,0x04,0x00}.ToBoolArray();
-            saves[i].Characters[4].Techs = new byte[]{0xFF,0xFF,0xFF,0xFF,0x0F}.ToBoolArray();
-            saves[i].Characters[5].Techs = new byte[]{0xFF,0x9F,0xFF,0x17,0x00}.ToBoolArray();
-            saves[i].Characters[6].Techs = new byte[]{0xEF,0xDF,0x6F,0x00,0x00}.ToBoolArray();
-            saves[i].Characters[7].Techs = new byte[]{0x7F,0xFE,0x2F,0x06,0x00}.ToBoolArray();
-            saves[i].Characters[8].Techs = new byte[]{0xFF,0x9F,0xFF,0x17,0x00}.ToBoolArray();
-
-            UpdateSaveString(saves[i]);
-            lblAllTechs.Content = "All techs unlocked.";
-        }
-
-        private void btnMaxCooking_Click(object sender, RoutedEventArgs e)
-        {
-            int i = cbxSaves.SelectedIndex;
-
-            for (int n = 0; n < 9; n++)
-            {
-                for (int c = 0; c < 24; c++)
-                {
-                    saves[i].Characters[n].Cooking[c] = 6;
-                }
-            }
-
-            UpdateSaveString(saves[i]);
-            lblMaxCooking.Content = "Cooking maxed.";
-        }
-
-        private void btnSave_Click(object sender, RoutedEventArgs e)
-        {
-            SaveFile();
-        }
-
-        private void sldItemQty_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            if (codeControl)
-                return;
-            int i = cbxSaves.SelectedIndex;
-            saves[i].Items[currentItem] = (byte)sldItemQty.Value;
-            lbxItems.Items[currentItem] = string.Format("{0} : {1}", Globals.ItemNames[currentItem], saves[i].Items[currentItem]);
-            UpdateSaveString(saves[i]);
-        }
-
-        private void lbxItems_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            if (cbxSaves.SelectedIndex < 0 || lbxItems.SelectedIndex < 0)
-                return;
-            codeControl = true;
-            currentItem = lbxItems.SelectedIndex;
-            sldItemQty.Value = saves[cbxSaves.SelectedIndex].Items[lbxItems.SelectedIndex];
-            codeControl = false;
-        }
+        #endregion
     }
 }

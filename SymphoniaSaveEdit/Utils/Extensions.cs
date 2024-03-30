@@ -11,6 +11,21 @@ namespace SymphoniaSaveEdit.Utils
         {
             var bools = new List<bool>();
 
+            for (int b = 0; b < bytes.Length; b++)
+            {
+                for (int n = 7; n >= 0; n--)
+                {
+                    bools.Add((bytes[b] & (byte)Math.Pow(2, n)) > 0);
+                }
+            }
+
+            return bools.ToArray();
+        }
+
+        public static bool[] ToReversedBoolArray(this byte[] bytes)
+        {
+            var bools = new List<bool>();
+
             for (int b = bytes.Length-1; b >= 0; b--)
             {
                 for (int n = 7; n >= 0; n--)
@@ -22,13 +37,13 @@ namespace SymphoniaSaveEdit.Utils
             return bools.ToArray();
         }
 
-        public static byte[] To4ByteArray(this bool[] bools, bool littleEndian)
+        public static byte[] To4ByteArray(this bool[] bools, bool bigEndian = false)
         {
             if (bools.Length % 8 != 0)
                 throw new ArgumentOutOfRangeException("Boolean array length must be divisible by 8. Otherwise padding of bits is unknown.");
 
             var byteCount = bools.Length / 8;
-            if(littleEndian)
+            if (bigEndian)
             {
                 bool[] copy = new bool[bools.Length];
                 Array.Copy(bools, copy, bools.Length);
