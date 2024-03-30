@@ -48,10 +48,10 @@ namespace SymphoniaSaveEdit
           "Thoda Geyser: White Silver",
           "Thoda Geyser: Orange Gel",
           "Thoda Geyser: Ex Gem Lv1",
-          "Sylverant Base: Beast Hide #1",
-          "Sylverant Base: Magical Cloth",
-          "Sylverant Base: Beast Hide #2",
-          "Sylverant Base: 1500 Gald",
+          "Sylvarant Base: Beast Hide #1",
+          "Sylvarant Base: Magical Cloth",
+          "Sylvarant Base: Beast Hide #2",
+          "Sylvarant Base: 1500 Gald",
           "Balacruf Mausoleum: 1800 Gald",
           "Balacruf Mausoleum: Beast Fang",
           "Balacruf Mausoleum: Beast Hide",
@@ -79,7 +79,7 @@ namespace SymphoniaSaveEdit
           "Tower of Mana: Ex Gem Lv2 #1",
           "Tower of Mana: Lunar Guard",
           "Tower of Mana: Moon Robe",
-          "Tower of Mana: Arnet Helm",
+          "Tower of Mana: Armet Helm",
           "Tower of Mana: Stinger Ring",
           "Sylvarant Base 2: Ex Gem Lv2 #3 ",
           "Sylvarant Base 2: Straw Hat",
@@ -239,7 +239,7 @@ namespace SymphoniaSaveEdit
           "Palmacosta Ranch: Apple Gel #1",
           "Palmacosta Ranch: Orange Gel #1",
           "Palmacosta Ranch: Life Bottle #1",
-          "Palmacosta Ranch: Organce Gel #2",
+          "Palmacosta Ranch: Orange Gel #2",
           "Iselia Human Ranch: Rune Helm",
           "Iselia Forest: Orange Gel #1",
           "Iselia Forest: 500 Gald",
@@ -294,19 +294,19 @@ namespace SymphoniaSaveEdit
           "None",
           "None",
           "Thoda Geyser: Bob",
-          "Altimara: Lulu",
+          "Altamira: Lulu",
           "Asgard: Hal",
           "Asgard: Murry",
           "Palmacosta: Teddy",
           "Palmacosta: Pepe",
-          "Altimira: Kenny",
+          "Altamira: Kenny",
           "Iselia House of Salvation: Kitty",
           "Thoda Dock: Binky",
           "Palmacosta House of Salvation: Caramel",
           "Asgard House of Salvation: Monmon",
           "Exire: Simon",
-          "Hemidall: Coco",
-          "Hemidall: Cookie",
+          "Heimdall: Coco",
+          "Heimdall: Cookie",
           "Hima: Boo",
           "Hima: Rocky",
           "Flanoir: Poochi",
@@ -353,7 +353,7 @@ namespace SymphoniaSaveEdit
           //
           "Sybak",                     //01
           "Ozette",                    //02
-          "Altimira",                  //04
+          "Altamira",                  //04
           "Flanoir",                   //08
           "Heimdall",                  //10
           "Exire",                     //20
