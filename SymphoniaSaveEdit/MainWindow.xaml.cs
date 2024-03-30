@@ -20,6 +20,7 @@ using System.Web.Script.Serialization;
 using SymphoniaSaveEdit.Utils;
 using Newtonsoft.Json;
 using Path = System.IO.Path;
+using System.Reflection;
 
 namespace SymphoniaSaveEdit
 {
@@ -306,6 +307,7 @@ namespace SymphoniaSaveEdit
         #region Form Code
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            this.Title = "Symphonia Save Editor v" + Assembly.GetExecutingAssembly().GetName().Version.ToString();
             treasureCount = (short)Globals.TreasureNames.Count(t => !t.Contains("None"));
             itemCount = (short)Globals.ItemNames[saveType].Count(i => !i.Contains("None"));
             dogCount = (short)Globals.DogNames.Count(d => !d.Contains("None"));
