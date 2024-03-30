@@ -1,26 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using Microsoft.Win32;
+using Newtonsoft.Json;
+using SymphoniaSaveEdit.SaveObj;
+using SymphoniaSaveEdit.Utils;
+using System;
 using System.Linq;
+using System.Reflection;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Microsoft.Win32;
-using SymphoniaSaveEdit.SaveObj;
-using PS3FileSystem;
-using System.Web.Script.Serialization;
-using SymphoniaSaveEdit.Utils;
-using Newtonsoft.Json;
+using System.Xml.Schema;
 using Path = System.IO.Path;
-using System.Reflection;
 
 namespace SymphoniaSaveEdit
 {
@@ -58,6 +48,9 @@ namespace SymphoniaSaveEdit
             lblLastModified.Content = string.Empty;
             lblTotal.Content = string.Empty;
             pbTotal.Visibility = System.Windows.Visibility.Hidden;
+            tbxStats.Clear();
+            lbxTitles.Items.Clear();
+            lbxTechs.Items.Clear();
         }
 
         private void ShowItems()
@@ -150,6 +143,67 @@ namespace SymphoniaSaveEdit
             UpdateSaveString(s);
         }
 
+        private void UpdateCharStats(GameSave sv, int charIndex)
+        {
+            StringBuilder sb = new StringBuilder();
+            Character c = sv.Characters[charIndex];
+            sb.AppendFormat("Lvl: {0}\r\n", c.Level);
+            sb.AppendFormat("Exp: {0:n0}\r\n", c.Exp);
+            sb.AppendFormat("Status: {0:X2}\r\n", c.Status);
+            sb.AppendLine();
+            sb.AppendFormat("HP: {0}/{1}\r\n", c.HP, c.MaxHP);
+            sb.AppendFormat("TP: {0}/{1}\r\n", c.TP, c.MaxTP);
+            sb.AppendFormat("Str: {0:000}        Def: {1:000}\r\n", c.Str, c.Def);
+            sb.AppendFormat("{0}: {1:000}  Acc: {2:000}\r\n", charIndex == 0 ? "Thrust" : "Atk", c.Atk, c.Acc);
+            sb.AppendFormat("{0}: {1:000}    Eva: {2:000}\r\n", charIndex == 0 ? "Slash" : "Att", c.Atk2, c.Eva);
+            sb.AppendFormat("Int: {0:000}         Lck: {1:000}\r\n", c.Int, c.Lck);
+            sb.AppendLine();
+            sb.AppendFormat("Weapon: {0}\r\n", c.Weapon == 0 ? string.Empty : Globals.ItemNames[saveType][c.Weapon - 1]);
+            sb.AppendFormat("Armor: {0}\r\n", c.Armor == 0 ? string.Empty : Globals.ItemNames[saveType][c.Armor - 1]);
+            sb.AppendFormat("Helm: {0}\r\n", c.Helm == 0 ? string.Empty : Globals.ItemNames[saveType][c.Helm - 1]);
+            sb.AppendFormat("Arms: {0}\r\n", c.Arms == 0 ? string.Empty : Globals.ItemNames[saveType][c.Arms - 1]);
+            sb.AppendFormat("Accessory: {0}\r\n", c.Accessory1 == 0 ? string.Empty : Globals.ItemNames[saveType][c.Accessory1 - 1]);
+            sb.AppendFormat("Accessory: {0}\r\n", c.Accessory2 == 0 ? string.Empty : Globals.ItemNames[saveType][c.Accessory2 - 1]);
+            sb.AppendLine();
+            sb.AppendLine($"Kills: {c.Kills:n0}");
+            sb.AppendLine($"Deaths: {c.Deaths:n0}");
+            sb.AppendLine($"Battle Items Used: {c.BattleItemsUsed:n0}");
+            sb.AppendFormat("Overlimit: {0}%\r\n", c.Overlimit);
+            sb.AppendFormat("Affection: {0:n0}\r\n", c.Affection);
+            sb.AppendLine();
+            sb.AppendLine("Tech Uses");
+            for (int t = 0; t < c.TechUses.Length; t++)
+                sb.AppendLine($"{Globals.Techs[charIndex, t]}: {c.TechUses[t]:n0}");
+
+            // Titles
+            lbxTitles.Items.Clear();
+            for (int b = 0; b < c.Titles.Length; b++)
+            {
+                var chk = new CheckBox() { Tag = b, Content = Globals.Titles[charIndex, b], IsChecked = c.Titles[b], Foreground = Globals.WhiteBrush, Style = Resources["CheckBoxStyle"] as Style };
+                if (chk.Content.ToString().StartsWith("Bugged"))
+                {
+                    chk.IsEnabled = false;
+                    chk.Foreground = new SolidColorBrush(Color.FromArgb(255, 96, 96, 96));
+                }
+                chk.Checked += chkTitle_Checked;
+                chk.Unchecked += chkTitle_Unchecked;
+                lbxTitles.Items.Add(chk);
+            }
+            sb.AppendLine();
+
+            // Techs
+            lbxTechs.Items.Clear();
+            for (int b = 0; b < c.Techs.Length; b++)
+            {
+                var chk = new CheckBox() { Tag = b, Content = Globals.Techs[charIndex, b], IsChecked = c.Techs[b], Foreground = Globals.WhiteBrush, Style = Resources["CheckBoxStyle"] as Style };
+                chk.Checked += chkTech_Checked;
+                chk.Unchecked += chkTech_Unchecked;
+                lbxTechs.Items.Add(chk);
+            }
+
+            tbxStats.Text = sb.ToString();
+        }
+
         private void UpdateItems(GameSave save)
         {
             lbxItems.Items.Clear();
@@ -171,7 +225,6 @@ namespace SymphoniaSaveEdit
             StringBuilder sb = new StringBuilder();
             sb.AppendFormat("Checksum1: {0:X2}\r\n", save.Checksum1);
             sb.AppendFormat("Checksum2: {0:X2}\r\n", save.Checksum2);
-            sb.AppendFormat("FChecksum1: {0:X2}\r\n", this.save.Checksum1);
             sb.AppendLine();
             sb.Append("Party: ");
             for (int i = 0; i < 8; i++)
@@ -186,13 +239,21 @@ namespace SymphoniaSaveEdit
             }
             sb.AppendLine();
             sb.AppendLine("Common Data");
+            sb.AppendLine("------------------------");
             sb.AppendLine(string.Format("Max Play Time: {0}", save.MaxGameTime.ToString()));
             sb.AppendLine(string.Format("Max Gald: {0:n0}", save.MaxGald));
             sb.AppendLine(string.Format("Total Gald Used: {0:n0}", save.TotalGaldUsed));
             sb.AppendLine(string.Format("Saves: {0:n0}", save.Saves));
             sb.AppendLine(string.Format("Game Cleared: {0}", save.GameCleared));
             sb.AppendLine();
+            sb.AppendLine("Challenge Title Progress");
+            sb.AppendLine("------------------------");
+            sb.AppendLine($"Default Weapon?: {save.DefaultEquip}");
+            sb.AppendLine($"Used Gels: {save.GelsUsed}");
+            sb.AppendLine($"No Deaths: {save.HaveDied}");
+            sb.AppendLine();
             sb.AppendLine("Battle Record");
+            sb.AppendLine("------------------------");
             sb.AppendLine(string.Format("Encounters: {0:n0}", save.MaxEncounters));
             sb.AppendLine(string.Format("Escapes: {0:n0}", save.Escapes));
             sb.AppendLine(string.Format("Max Combo: {0} hit", save.MaxCombo));
@@ -200,18 +261,23 @@ namespace SymphoniaSaveEdit
             sb.AppendLine(string.Format("Max Grade: {0:n2}", save.MaxGrade));
             sb.AppendLine();
             sb.AppendLine("Current");
+            sb.AppendLine("------------------------");
             sb.AppendLine(string.Format("Game Time: {0}", save.GameTime.ToString()));
             sb.AppendLine(string.Format("Gald: {0:n0}", save.Gald));
             sb.AppendLine(string.Format("Encounters: {0:n0}", save.Encounters));
             sb.AppendLine(string.Format("Combo: {0} hit", save.MaxCombo));
             sb.AppendLine(string.Format("Grade: {0:n2}", save.Grade));
             sb.AppendLine();
+            sb.AppendLine("Battles");
+            sb.AppendLine("------------------------");
             sb.AppendLine(string.Format("Battles: {0:n0}", save.Battles));
             for (int i = 0; i < 9; i++)
             {
                 sb.AppendFormat("{0} Battles: {1:n0}\r\n", save.Characters[i].Name, save.Characters[i].Battles);
             }
             sb.AppendLine();
+            sb.AppendLine("Kills");
+            sb.AppendLine("------------------------");
             for (int i = 0; i < 9; i++)
             {
                 sb.AppendFormat("{0} Kills: {1:n0}\r\n", save.Characters[i].Name, save.Characters[i].Kills);
@@ -295,7 +361,7 @@ namespace SymphoniaSaveEdit
             }
             catch (Exception ex)
             {
-                MessageBox.Show(ex.ToString(), "Error Serializing Edit");
+                MessageBox.Show(ex.ToString(), "Error Serializing Edit", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
@@ -307,7 +373,8 @@ namespace SymphoniaSaveEdit
         #region Form Code
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            this.Title = "Symphonia Save Editor v" + Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            Title = "Symphonia Save Editor v" + Assembly.GetExecutingAssembly().GetName().Version.ToString();
+
             treasureCount = (short)Globals.TreasureNames.Count(t => !t.Contains("None"));
             itemCount = (short)Globals.ItemNames[saveType].Count(i => !i.Contains("None"));
             dogCount = (short)Globals.DogNames.Count(d => !d.Contains("None"));
@@ -402,57 +469,7 @@ namespace SymphoniaSaveEdit
 
         private void cbxStatChar_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            StringBuilder sb = new StringBuilder();
-            GameSave sv = save.Saves[cbxSaves.SelectedIndex];
-            int i = cbxStatChar.SelectedIndex;
-            sb.AppendFormat("Lvl: {0}\r\n", sv.Characters[i].Level);
-            sb.AppendFormat("Exp: {0:n0}\r\n", sv.Characters[i].Exp);
-            sb.AppendFormat("Status: {0:X2}\r\n", sv.Characters[i].Status);
-            sb.AppendLine();
-            sb.AppendFormat("HP: {0}/{1}\r\n", sv.Characters[i].HP, sv.Characters[i].MaxHP);
-            sb.AppendFormat("TP: {0}/{1}\r\n", sv.Characters[i].TP, sv.Characters[i].MaxTP);
-            sb.AppendFormat("Str: {0:000}        Def: {1:000}\r\n", sv.Characters[i].Str, sv.Characters[i].Def);
-            sb.AppendFormat("{0}: {1:000}  Acc: {2:000}\r\n", i == 0 ? "Thrust" : "Atk", sv.Characters[i].Atk, sv.Characters[i].Acc);
-            sb.AppendFormat("{0}: {1:000}    Eva: {2:000}\r\n", i == 0 ? "Slash" : "Att", sv.Characters[i].Atk2, sv.Characters[i].Eva);
-            sb.AppendFormat("Int: {0:000}         Lck: {1:000}\r\n", sv.Characters[i].Int, sv.Characters[i].Lck);
-            sb.AppendLine();
-            sb.AppendFormat("Weapon: {0}\r\n", sv.Characters[i].Weapon == 0 ? string.Empty : Globals.ItemNames[saveType][sv.Characters[i].Weapon - 1]);
-            sb.AppendFormat("Armor: {0}\r\n", sv.Characters[i].Armor == 0 ? string.Empty : Globals.ItemNames[saveType][sv.Characters[i].Armor - 1]);
-            sb.AppendFormat("Helm: {0}\r\n", sv.Characters[i].Helm == 0 ? string.Empty : Globals.ItemNames[saveType][sv.Characters[i].Helm - 1]);
-            sb.AppendFormat("Arms: {0}\r\n", sv.Characters[i].Arms == 0 ? string.Empty : Globals.ItemNames[saveType][sv.Characters[i].Arms - 1]);
-            sb.AppendFormat("Accessory: {0}\r\n", sv.Characters[i].Accessory1 == 0 ? string.Empty : Globals.ItemNames[saveType][sv.Characters[i].Accessory1 - 1]);
-            sb.AppendFormat("Accessory: {0}\r\n", sv.Characters[i].Accessory2 == 0 ? string.Empty : Globals.ItemNames[saveType][sv.Characters[i].Accessory2 - 1]);
-            sb.AppendLine();
-            sb.AppendFormat("Overlimit: {0}%\r\n", sv.Characters[i].Overlimit);
-            sb.AppendFormat("Affection: {0:n0}\r\n", sv.Characters[i].Affection);
-
-            // Titles
-            lbxTitles.Items.Clear();
-            for (int b = 0; b < sv.Characters[i].Titles.Length; b++)
-            {
-                var c = new CheckBox() { Tag = b, Content = Globals.Titles[i, b], IsChecked = sv.Characters[i].Titles[b], Foreground = Globals.WhiteBrush, Style = Resources["CheckBoxStyle"] as Style };
-                if (c.Content.ToString().StartsWith("Bugged"))
-                {
-                    c.IsEnabled = false;
-                    c.Foreground = new SolidColorBrush(Color.FromArgb(255, 96, 96, 96));
-                }
-                c.Checked += chkTitle_Checked;
-                c.Unchecked += chkTitle_Unchecked;
-                lbxTitles.Items.Add(c);
-            }
-            sb.AppendLine();
-
-            // Techs
-            lbxTechs.Items.Clear();
-            for (int b = 0; b < sv.Characters[i].Techs.Length; b++)
-            {
-                var c = new CheckBox() { Tag = b, Content = Globals.Techs[i, b], IsChecked = sv.Characters[i].Techs[b], Foreground = Globals.WhiteBrush, Style = Resources["CheckBoxStyle"] as Style };
-                c.Checked += chkTech_Checked;
-                c.Unchecked += chkTech_Unchecked;
-                lbxTechs.Items.Add(c);
-            }
-
-            tbxStats.Text = sb.ToString();
+            UpdateCharStats(save.Saves[cbxSaves.SelectedIndex], cbxStatChar.SelectedIndex);
         }
 
         private void chkTech_Unchecked(object sender, RoutedEventArgs e)
@@ -571,6 +588,11 @@ namespace SymphoniaSaveEdit
 
         private void btnFixChecksum_Click(object sender, RoutedEventArgs e)
         {
+            if (save.saveType == SaveType.PCRaw || save.saveType == SaveType.PS3)
+            {
+                MessageBox.Show("This game platform version doesn't use checksums in the save file.");
+            }
+
             int i = cbxSaves.SelectedIndex;
             save.CalculateChecksum(i);
 
