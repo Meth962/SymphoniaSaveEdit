@@ -25,7 +25,6 @@ namespace SymphoniaSaveEdit
 
         SaveFile save;
         string filename = string.Empty;
-        SaveType saveType = SaveType.PCRaw;
 
         // Ugly WPF fault coding
         int previousTab = -1;
@@ -53,6 +52,7 @@ namespace SymphoniaSaveEdit
             tbxStats.Clear();
             lbxTitles.Items.Clear();
             lbxTechs.Items.Clear();
+            cbxStatChar.SelectedIndex = -1;
         }
 
         private void ShowItems()
@@ -160,12 +160,12 @@ namespace SymphoniaSaveEdit
             sb.AppendFormat("{0}: {1:000}    Eva: {2:000}\r\n", charIndex == 0 ? "Slash" : "Att", c.Atk2, c.Eva);
             sb.AppendFormat("Int: {0:000}         Lck: {1:000}\r\n", c.Int, c.Lck);
             sb.AppendLine();
-            sb.AppendFormat("Weapon: {0}\r\n", c.Weapon == 0 ? string.Empty : Globals.ItemNames[saveType][c.Weapon - 1]);
-            sb.AppendFormat("Armor: {0}\r\n", c.Armor == 0 ? string.Empty : Globals.ItemNames[saveType][c.Armor - 1]);
-            sb.AppendFormat("Helm: {0}\r\n", c.Helm == 0 ? string.Empty : Globals.ItemNames[saveType][c.Helm - 1]);
-            sb.AppendFormat("Arms: {0}\r\n", c.Arms == 0 ? string.Empty : Globals.ItemNames[saveType][c.Arms - 1]);
-            sb.AppendFormat("Accessory: {0}\r\n", c.Accessory1 == 0 ? string.Empty : Globals.ItemNames[saveType][c.Accessory1 - 1]);
-            sb.AppendFormat("Accessory: {0}\r\n", c.Accessory2 == 0 ? string.Empty : Globals.ItemNames[saveType][c.Accessory2 - 1]);
+            sb.AppendFormat("Weapon: {0}\r\n", c.Weapon == 0 ? string.Empty : Globals.ItemNames[save.saveType][c.Weapon - 1]);
+            sb.AppendFormat("Armor: {0}\r\n", c.Armor == 0 ? string.Empty : Globals.ItemNames[save.saveType][c.Armor - 1]);
+            sb.AppendFormat("Helm: {0}\r\n", c.Helm == 0 ? string.Empty : Globals.ItemNames[save.saveType][c.Helm - 1]);
+            sb.AppendFormat("Arms: {0}\r\n", c.Arms == 0 ? string.Empty : Globals.ItemNames[save.saveType][c.Arms - 1]);
+            sb.AppendFormat("Accessory: {0}\r\n", c.Accessory1 == 0 ? string.Empty : Globals.ItemNames[save.saveType][c.Accessory1 - 1]);
+            sb.AppendFormat("Accessory: {0}\r\n", c.Accessory2 == 0 ? string.Empty : Globals.ItemNames[save.saveType][c.Accessory2 - 1]);
             sb.AppendLine();
             sb.AppendLine($"Kills: {c.Kills:n0}");
             sb.AppendLine($"Deaths: {c.Deaths:n0}");
@@ -211,13 +211,13 @@ namespace SymphoniaSaveEdit
             lbxItems.Items.Clear();
             for (int i = 0; i < save.Items.Length; i++)
             {
-                if (i + 1 > Globals.ItemNames[saveType].Length)
+                if (i + 1 > Globals.ItemNames[this.save.saveType].Length)
                 {
                     lbxItems.Items.Add($"Unknown : {save.Items[i]}");
-                    Console.WriteLine($"Error itemId {i} does not exist in {saveType}");
+                    Console.WriteLine($"Error itemId {i} does not exist in {this.save.saveType}");
                 }
                 else
-                    lbxItems.Items.Add(string.Format("{0} : {1}", Globals.ItemNames[saveType][i], save.Items[i]));
+                    lbxItems.Items.Add(string.Format("{0} : {1}", Globals.ItemNames[this.save.saveType][i], save.Items[i]));
             }
         }
 
@@ -329,7 +329,7 @@ namespace SymphoniaSaveEdit
                 return;
 
             SaveFileDialog svd = new SaveFileDialog();
-            switch(saveType)
+            switch(save.saveType)
             {
                 case SaveType.GC:
                     svd.Filter = "GameCube Save|*.gci;*.gcs;*.sav";
@@ -369,7 +369,7 @@ namespace SymphoniaSaveEdit
 
             save.WriteSave(filename, cbxSaves.SelectedIndex);
 
-            MessageBox.Show(Path.GetFileName(filename), "File Saved", MessageBoxButton.OK, MessageBoxImage.Information);
+            //MessageBox.Show(Path.GetFileName(filename), "File Saved", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private string GetThankYou()
@@ -386,7 +386,7 @@ namespace SymphoniaSaveEdit
             lblThankyou.Content = GetThankYou();
 
             treasureCount = (short)Globals.TreasureNames.Count(t => !t.Contains("None"));
-            itemCount = (short)Globals.ItemNames[saveType].Count(i => !i.Contains("None"));
+            itemCount = (short)Globals.ItemNames[0].Count(i => !i.Contains("None"));
             dogCount = (short)Globals.DogNames.Count(d => !d.Contains("None"));
             womenCount = (short)Globals.WomenNames.Count(w => !w.Contains("None"));
         }
@@ -395,8 +395,7 @@ namespace SymphoniaSaveEdit
         {
             OpenFileDialog ofd = new OpenFileDialog();
             ofd.Multiselect = true;
-            ofd.DefaultExt = "*.gci, *.gcs, *.sav";
-            ofd.Filter = "GameCube Save files (*.gci, *.gcs, *.sav)|*.gci;*.gcs;*.sav|PS3 Save files (*.bin, *.pfd, *.sfo)|*.pfd;*.sfo;*.bin|Switch Save File (*.dat)|*.dat|PS4 Unencrypted Save (*.dat)|*.dat|PC Save Files (*.dat)|*.dat;|All files (*.*)|*.*";
+            ofd.Filter = "PS4 Unencrypted Save (*.dat)|*.dat|Switch Save File (*.dat)|*.dat|PC Save Files (*.dat)|*.dat;|GameCube Save files (*.gci, *.gcs, *.sav)|*.gci;*.gcs;*.sav|PS3 Save files (*.bin, *.pfd, *.sfo)|*.pfd;*.sfo;*.bin|All files (*.*)|*.*";
 
             var result = ofd.ShowDialog();
             if (result == true)
@@ -416,9 +415,9 @@ namespace SymphoniaSaveEdit
                 }
                 else if (filename.ToLower().EndsWith(".dat"))
                 {
-                    if (ofd.FilterIndex == 3)
+                    if (ofd.FilterIndex == 1)
                         save = new SwitchSave(filename);
-                    else if (ofd.FilterIndex == 4)
+                    else if (ofd.FilterIndex == 0)
                         save = new PS4Save(filename);
                     else
                         save = new PCSave(filename);
@@ -436,6 +435,7 @@ namespace SymphoniaSaveEdit
 
         private void cbxSaves_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (cbxSaves.SelectedIndex < 0) return;
             GetData();
 
             switch (tabControl.SelectedIndex)
@@ -479,6 +479,7 @@ namespace SymphoniaSaveEdit
 
         private void cbxStatChar_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
+            if (cbxStatChar.SelectedIndex < 0) return;
             UpdateCharStats(save.Saves[cbxSaves.SelectedIndex], cbxStatChar.SelectedIndex);
         }
 
@@ -565,7 +566,7 @@ namespace SymphoniaSaveEdit
         private void btnMaxItems_Click(object sender, RoutedEventArgs e)
         {
             int i = cbxSaves.SelectedIndex;
-            byte q = 1;
+            //byte q = 1;
             for (int n = 0; n < save.Saves[i].Items.Length; n++)
             {
                 // 50, skip 24 key items, 198
@@ -691,7 +692,7 @@ namespace SymphoniaSaveEdit
                 return;
             int i = cbxSaves.SelectedIndex;
             save.Saves[i].Items[currentItem] = (byte)sldItemQty.Value;
-            lbxItems.Items[currentItem] = string.Format("{0} : {1}", Globals.ItemNames[saveType][currentItem], save.Saves[i].Items[currentItem]);
+            lbxItems.Items[currentItem] = string.Format("{0} : {1}", Globals.ItemNames[save.saveType][currentItem], save.Saves[i].Items[currentItem]);
             UpdateSaveString(save.Saves[i]);
         }
 
