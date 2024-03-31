@@ -347,7 +347,7 @@ namespace SymphoniaSaveEdit.SaveObj
                 bw.BaseStream.Seek(3, SeekOrigin.Current);
                 bw.Write(save.Characters[i].Status);
 
-                work = save.Characters[i].Titles.To4ByteArray(false);
+                work = ReverseBytes(save.Characters[i].Titles.ToByteArray());
                 bw.Write(work);
 
                 bw.BaseStream.Seek(2, SeekOrigin.Current);
@@ -377,7 +377,7 @@ namespace SymphoniaSaveEdit.SaveObj
                 bw.WriteReverse(save.Characters[i].Affection);
                 //seek 0xf, read 5 tech mask bytes
                 bw.BaseStream.Seek(0x17, SeekOrigin.Current);
-                work = save.Characters[i].Techs.To4ByteArray(false);
+                work = ReverseBytes(save.Characters[i].Techs.ToByteArrayLow());
                 bw.Write(work);
 
                 bw.BaseStream.Seek(0x10, SeekOrigin.Current);
@@ -468,7 +468,7 @@ namespace SymphoniaSaveEdit.SaveObj
                 bw.Write(save.CollectorsBook[i]);
 
             bw.BaseStream.Seek(0xcb1, SeekOrigin.Current);
-            bw.Write(save.Recipes.To4ByteArray(false));
+            bw.Write(ReverseBytes(save.Recipes.ToByteArray()));
             bw.BaseStream.Seek(7, SeekOrigin.Current);
             bw.Write(save.EncounterMode);
 

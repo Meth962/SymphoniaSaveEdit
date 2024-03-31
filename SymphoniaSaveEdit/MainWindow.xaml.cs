@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Xml.Schema;
 using Path = System.IO.Path;
@@ -197,8 +198,8 @@ namespace SymphoniaSaveEdit
             for (int b = 0; b < c.Techs.Length; b++)
             {
                 var chk = new CheckBox() { Tag = b, Content = Globals.Techs[charIndex, b], IsChecked = c.Techs[b], Foreground = Globals.WhiteBrush, Style = Resources["CheckBoxStyle"] as Style };
-                chk.Checked += chkTech_Checked;
-                chk.Unchecked += chkTech_Unchecked;
+                chk.Checked += new RoutedEventHandler(chkTech_Checked);
+                chk.Unchecked += new RoutedEventHandler(chkTech_Unchecked);
                 lbxTechs.Items.Add(chk);
             }
 
@@ -498,7 +499,7 @@ namespace SymphoniaSaveEdit
         private void chkTitle_Checked(object sender, RoutedEventArgs e)
         {
             var i = (int)((CheckBox)e.OriginalSource).Tag;
-            save.Saves[cbxSaves.SelectedIndex].Characters[cbxStatChar.SelectedIndex].Techs[i] = true;
+            save.Saves[cbxSaves.SelectedIndex].Characters[cbxStatChar.SelectedIndex].Titles[i] = true;
             UpdateSaveString(save.Saves[cbxSaves.SelectedIndex]);
         }
 
@@ -567,14 +568,14 @@ namespace SymphoniaSaveEdit
             byte q = 1;
             for (int n = 0; n < save.Saves[i].Items.Length; n++)
             {
-                /* 50, skip 24 key items, 198
+                // 50, skip 24 key items, 198
                 if (n > 50 && n < 74)
-                    saves[i].Items[n] = 1;
+                    save.Saves[i].Items[n] = 1;
                 else
-                    saves[i].Items[n] = 20;
-                */
-                save.Saves[i].Items[n] = q++;
-                if (q > 20) q = 1;
+                    save.Saves[i].Items[n] = 20;
+                
+                //save.Saves[i].Items[n] = q++;
+                //if (q > 20) q = 1;
             }
             UpdateSaveString(save.Saves[i]);
             UpdateItems(save.Saves[i]);
@@ -600,6 +601,7 @@ namespace SymphoniaSaveEdit
             if (save.saveType == SaveType.PCRaw || save.saveType == SaveType.PS3)
             {
                 MessageBox.Show("This game platform version doesn't use checksums in the save file.");
+                return;
             }
 
             int i = cbxSaves.SelectedIndex;
@@ -630,15 +632,15 @@ namespace SymphoniaSaveEdit
         {
             int i = cbxSaves.SelectedIndex;
 
-            save.Saves[i].Characters[0].Titles = new byte[] { 0xFE,0xE7,0xFF,0x1F}.ToBoolArray();
-            save.Saves[i].Characters[1].Titles = new byte[] { 0xFE,0xFF,0x3F,0x00}.ToBoolArray();
-            save.Saves[i].Characters[2].Titles = new byte[] { 0xFE,0xFF,0x1F,0x00}.ToBoolArray();
-            save.Saves[i].Characters[3].Titles = new byte[] { 0xFE,0xFF,0x03,0x00}.ToBoolArray();
-            save.Saves[i].Characters[4].Titles = new byte[] { 0xFE,0xFF,0x03,0x00}.ToBoolArray();
-            save.Saves[i].Characters[5].Titles = new byte[] { 0xFE,0xFF,0x01,0x00}.ToBoolArray();
-            save.Saves[i].Characters[6].Titles = new byte[] { 0xFE,0xFF,0x00,0x00}.ToBoolArray();
-            save.Saves[i].Characters[7].Titles = new byte[] { 0xFE,0xFF,0x00,0x00}.ToBoolArray();
-            save.Saves[i].Characters[8].Titles = new byte[] { 0xFE,0x07,0x00,0x00}.ToBoolArray();
+            save.Saves[i].Characters[0].Titles = new byte[] { 0xFE,0xD7,0xFF,0x7F}.ToBoolArray();
+            save.Saves[i].Characters[1].Titles = new byte[] { 0xFE,0xFF,0xFF,0x00}.ToBoolArray();
+            save.Saves[i].Characters[2].Titles = new byte[] { 0xFE,0xFF,0x7F,0x00}.ToBoolArray();
+            save.Saves[i].Characters[3].Titles = new byte[] { 0xFE,0xFF,0x0F,0x00}.ToBoolArray();
+            save.Saves[i].Characters[4].Titles = new byte[] { 0xFE,0xFF,0x0F,0x00}.ToBoolArray();
+            save.Saves[i].Characters[5].Titles = new byte[] { 0xFE,0xFF,0x07,0x00}.ToBoolArray();
+            save.Saves[i].Characters[6].Titles = new byte[] { 0xFE,0xFF,0x03,0x00}.ToBoolArray();
+            save.Saves[i].Characters[7].Titles = new byte[] { 0xFE,0xFF,0x03,0x00}.ToBoolArray();
+            save.Saves[i].Characters[8].Titles = new byte[] { 0xFE,0x17,0x00,0x00}.ToBoolArray();
             
             UpdateSaveString(save.Saves[i]);
             lblAllTitles.Content = "All titles unlocked.";
@@ -648,15 +650,15 @@ namespace SymphoniaSaveEdit
         {
             int i = cbxSaves.SelectedIndex;
 
-            save.Saves[i].Characters[0].Techs = new byte[]{0xFF,0xFF,0xFF,0xFF,0x07}.ToBoolArray();
-            save.Saves[i].Characters[1].Techs = new byte[]{0xFF,0xAF,0x8F,0x0F,0x00}.ToBoolArray();
-            save.Saves[i].Characters[2].Techs = new byte[]{0xFF,0xFF,0xFF,0xFF,0x09}.ToBoolArray();
-            save.Saves[i].Characters[3].Techs = new byte[]{0xFF,0xFF,0xFF,0x04,0x00}.ToBoolArray();
-            save.Saves[i].Characters[4].Techs = new byte[]{0xFF,0xFF,0xFF,0xFF,0x0F}.ToBoolArray();
-            save.Saves[i].Characters[5].Techs = new byte[]{0xFF,0x9F,0xFF,0x17,0x00}.ToBoolArray();
-            save.Saves[i].Characters[6].Techs = new byte[]{0xEF,0xDF,0x6F,0x00,0x00}.ToBoolArray();
-            save.Saves[i].Characters[7].Techs = new byte[]{0x7F,0xFE,0x2F,0x06,0x00}.ToBoolArray();
-            save.Saves[i].Characters[8].Techs = new byte[]{0xFF,0x9F,0xFF,0x17,0x00}.ToBoolArray();
+            save.Saves[i].Characters[0].Techs = new byte[]{0xFF,0xFF,0x7F,0xFE,0x03}.ToBoolArrayLow();
+            save.Saves[i].Characters[1].Techs = new byte[]{0xFF,0xAF,0x8B,0x5F,0x00}.ToBoolArrayLow();
+            save.Saves[i].Characters[2].Techs = new byte[]{0xBF,0xFF,0xFB,0xB9,0x07}.ToBoolArrayLow();
+            save.Saves[i].Characters[3].Techs = new byte[]{0x79,0xDB,0xF6,0x7F,0x00}.ToBoolArrayLow();
+            save.Saves[i].Characters[4].Techs = new byte[]{0xFF,0xFF,0xFF,0xFD,0x0F}.ToBoolArrayLow();
+            save.Saves[i].Characters[5].Techs = new byte[]{0xFF,0xFF,0xFF,0x1D,0x00}.ToBoolArrayLow();
+            save.Saves[i].Characters[6].Techs = new byte[]{0xEF,0xDF,0xDF,0x01,0x00}.ToBoolArrayLow();
+            save.Saves[i].Characters[7].Techs = new byte[]{0x7F,0xFE,0xFF,0x07,0x00}.ToBoolArrayLow();
+            save.Saves[i].Characters[8].Techs = new byte[]{0xFF,0xFF,0xFF,0x1D,0x00}.ToBoolArrayLow();
 
             UpdateSaveString(save.Saves[i]);
             lblAllTechs.Content = "All techs unlocked.";

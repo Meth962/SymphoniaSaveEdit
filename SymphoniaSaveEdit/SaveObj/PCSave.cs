@@ -102,7 +102,7 @@ namespace SymphoniaSaveEdit.SaveObj
                 //br.BaseStream.Seek(0x2c, SeekOrigin.Current);//0x2c,0x2d
                 //seek 0xb, read 5 tech mask bytes
                 br.BaseStream.Seek(0x16, SeekOrigin.Current);
-                save.Characters[i].Techs = br.ReadBytes(5).ToBoolArray();
+                save.Characters[i].Techs = br.ReadBytes(5).ToBoolArrayLow();
 
                 br.BaseStream.Seek(0x13, SeekOrigin.Current);
                 for (int t = 0; t < save.Characters[i].TechUses.Length; t++)
@@ -323,7 +323,7 @@ namespace SymphoniaSaveEdit.SaveObj
                 bw.BaseStream.Seek(3, SeekOrigin.Current);
                 bw.Write(save.Characters[i].Status);
 
-                work = save.Characters[i].Titles.To4ByteArray();
+                work = save.Characters[i].Titles.ToByteArray();
                 bw.Write(work);
 
                 bw.BaseStream.Seek(2, SeekOrigin.Current);
@@ -353,7 +353,7 @@ namespace SymphoniaSaveEdit.SaveObj
                 bw.Write(save.Characters[i].Affection);
                 //seek 0xb, read 5 tech mask bytes
                 bw.BaseStream.Seek(0x16, SeekOrigin.Current);
-                work = save.Characters[i].Techs.To4ByteArray();
+                work = save.Characters[i].Techs.ToByteArrayLow();
                 bw.Write(work);
 
                 bw.BaseStream.Seek(0x13, SeekOrigin.Current);
@@ -448,7 +448,7 @@ namespace SymphoniaSaveEdit.SaveObj
                 bw.Write(save.CollectorsBook[i]);
 
             bw.BaseStream.Seek(0x1caf, SeekOrigin.Begin);// maybe 1cb0 but fat chance
-            bw.Write(save.Recipes.To4ByteArray(false));
+            bw.Write(save.Recipes.ToByteArray());
             bw.BaseStream.Seek(7, SeekOrigin.Current);
             bw.Write(save.EncounterMode);
 
@@ -489,12 +489,6 @@ namespace SymphoniaSaveEdit.SaveObj
             // Grade
             bw.BaseStream.Seek(0x1dc4, SeekOrigin.Begin);
             bw.Write((uint)(save.Grade * 100));
-
-            // Checksum
-            CalculateChecksum();
-            bw.BaseStream.Seek(0, SeekOrigin.Begin);
-            bw.Write(Checksum1);
-            bw.Write(0);
 
             bw.Close();
 

@@ -57,9 +57,9 @@ namespace SymphoniaSaveEdit.SaveObj
 
         public uint Battles { get; set; }
         public ushort HardModeBattles { get; set; }
-        [JsonIgnore]
         public byte Challenges { get; set; }
         public bool DefaultEquip { get; set; }
+        public bool HardmodeOnly { get; set; }
         public bool GelsUsed { get; set; }
         public bool HaveDied { get; set; }
 

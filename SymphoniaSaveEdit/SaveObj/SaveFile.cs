@@ -236,6 +236,7 @@ namespace SymphoniaSaveEdit.SaveObj
             // Challenges, no gels, default equip, deaths, etc. for titles
             save.Challenges = br.ReadByte();
             save.GelsUsed = (save.Challenges & 8) == 8;
+            save.HardmodeOnly = (save.Challenges & 4) == 4;
             save.HaveDied = (save.Challenges & 2) == 2;
             save.DefaultEquip = (save.Challenges & 1) == 1;
             br.ReadBytes(2);
@@ -342,7 +343,7 @@ namespace SymphoniaSaveEdit.SaveObj
                 bw.BaseStream.Seek(3, SeekOrigin.Current);
                 bw.Write(save.Characters[i].Status);
 
-                work = save.Characters[i].Titles.To4ByteArray();
+                work = save.Characters[i].Titles.ToByteArray();
                 bw.Write(work);
 
                 bw.BaseStream.Seek(2, SeekOrigin.Current);
@@ -372,7 +373,7 @@ namespace SymphoniaSaveEdit.SaveObj
                 bw.Write(save.Characters[i].Affection);
                 //seek 0xb, read 5 tech mask bytes
                 bw.BaseStream.Seek(0x16, SeekOrigin.Current);
-                work = save.Characters[i].Techs.To4ByteArray();
+                work = save.Characters[i].Techs.ToByteArrayLow();
                 bw.Write(work);
 
                 bw.BaseStream.Seek(0x13, SeekOrigin.Current);
@@ -467,7 +468,7 @@ namespace SymphoniaSaveEdit.SaveObj
                 bw.Write(save.CollectorsBook[i]);
 
             bw.BaseStream.Seek(0x1c0f, SeekOrigin.Begin);// 0x1caf; maybe 1cb0 but fat chance
-            bw.Write(save.Recipes.To4ByteArray(false));
+            bw.Write(save.Recipes.ToByteArray());
             bw.BaseStream.Seek(7, SeekOrigin.Current);
             bw.Write(save.EncounterMode);
 
@@ -482,6 +483,7 @@ namespace SymphoniaSaveEdit.SaveObj
             // 1 = ? saw in Noxbur's save
             byte flag = save.Challenges;
             if (save.GelsUsed) flag |= 8;
+            if (save.HardmodeOnly) flag |= 4;
             if (save.HaveDied) flag |= 2;
             if (save.DefaultEquip) flag |= 1;
             bw.Write(flag);
