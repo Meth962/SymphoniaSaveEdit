@@ -6,7 +6,11 @@ This is a very old project that I built for myself. Enough people were asking ab
 Anything that is displayed by this program can also be changed. Some things are not in a field that is changeable but can be added at some point as requested. I simply wasn't changing those values and therefore left them as display only.
 
 ## History
-**v0.9.0.0** (3/30/2024): PS4 + Rewrite
+**v0.9.1** (3/30/2024): Tech fixup
+* Rewrote all techs to match PS4. Kratos was a complete guess as I don't have a save with him in it. A couple techs could still be off by one.
+* Added Thank You
+
+**v0.9.0** (3/30/2024): PS4 + Rewrite
 * Thanks to Noxbur, we found how the PS4 version calculates checksum. This works with raw (decrypted) PS4 saves.
 * Have to confirm on other platforms but this fix is focusing on PS4/Switch raw saves.  
 * Code needs a rewrite. Started the process of splitting console specific code into other classes and removing methods from the monolithic main class.
