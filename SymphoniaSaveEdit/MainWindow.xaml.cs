@@ -20,6 +20,7 @@ namespace SymphoniaSaveEdit
         private short itemCount = 0;
         private short dogCount = 0;
         private short womenCount = 0;
+        private int thankyou = 0;
 
         SaveFile save;
         string filename = string.Empty;
@@ -226,7 +227,8 @@ namespace SymphoniaSaveEdit
             sb.AppendFormat("Checksum1: {0:X2}\r\n", save.Checksum1);
             sb.AppendFormat("Checksum2: {0:X2}\r\n", save.Checksum2);
             sb.AppendLine();
-            sb.Append("Party: ");
+            sb.AppendLine("Party:");
+            sb.AppendLine("---------");
             for (int i = 0; i < 8; i++)
             {
                 if (save.Party[i] != 0)
@@ -246,6 +248,14 @@ namespace SymphoniaSaveEdit
             sb.AppendLine(string.Format("Saves: {0:n0}", save.Saves));
             sb.AppendLine(string.Format("Game Cleared: {0}", save.GameCleared));
             sb.AppendLine();
+            sb.AppendLine("Current");
+            sb.AppendLine("------------------------");
+            sb.AppendLine(string.Format("Game Time: {0}", save.GameTime.ToString()));
+            sb.AppendLine(string.Format("Gald: {0:n0}", save.Gald));
+            sb.AppendLine(string.Format("Encounters: {0:n0}", save.Encounters));
+            sb.AppendLine(string.Format("Combo: {0} hit", save.MaxCombo));
+            sb.AppendLine(string.Format("Grade: {0:n2}", save.Grade));
+            sb.AppendLine();
             sb.AppendLine("Challenge Title Progress");
             sb.AppendLine("------------------------");
             sb.AppendLine($"Default Weapon?: {save.DefaultEquip}");
@@ -260,17 +270,8 @@ namespace SymphoniaSaveEdit
             sb.AppendLine(string.Format("Max Damage: {0:n0}", save.MaxDmg));
             sb.AppendLine(string.Format("Max Grade: {0:n2}", save.MaxGrade));
             sb.AppendLine();
-            sb.AppendLine("Current");
+            sb.AppendLine($"Battles: {save.Battles:n0}");
             sb.AppendLine("------------------------");
-            sb.AppendLine(string.Format("Game Time: {0}", save.GameTime.ToString()));
-            sb.AppendLine(string.Format("Gald: {0:n0}", save.Gald));
-            sb.AppendLine(string.Format("Encounters: {0:n0}", save.Encounters));
-            sb.AppendLine(string.Format("Combo: {0} hit", save.MaxCombo));
-            sb.AppendLine(string.Format("Grade: {0:n2}", save.Grade));
-            sb.AppendLine();
-            sb.AppendLine("Battles");
-            sb.AppendLine("------------------------");
-            sb.AppendLine(string.Format("Battles: {0:n0}", save.Battles));
             for (int i = 0; i < 9; i++)
             {
                 sb.AppendFormat("{0} Battles: {1:n0}\r\n", save.Characters[i].Name, save.Characters[i].Battles);
@@ -370,10 +371,18 @@ namespace SymphoniaSaveEdit
             MessageBox.Show(Path.GetFileName(filename), "File Saved", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
+        private string GetThankYou()
+        {
+            thankyou = new Random().Next(Globals.ThankYous.GetLength(0));
+            return Globals.ThankYous[thankyou,0];
+        }
+
         #region Form Code
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            Title = "Symphonia Save Editor v" + Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            var version = Assembly.GetExecutingAssembly().GetName().Version;
+            Title = $"Symphonia Save Editor v{version.Major}.{version.Minor}.{version.Build} ({version.Revision})";
+            lblThankyou.Content = GetThankYou();
 
             treasureCount = (short)Globals.TreasureNames.Count(t => !t.Contains("None"));
             itemCount = (short)Globals.ItemNames[saveType].Count(i => !i.Contains("None"));
@@ -692,6 +701,11 @@ namespace SymphoniaSaveEdit
             currentItem = lbxItems.SelectedIndex;
             sldItemQty.Value = save.Saves[cbxSaves.SelectedIndex].Items[lbxItems.SelectedIndex];
             codeControl = false;
+        }
+
+        private void lblThankyou_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            MessageBox.Show(Globals.ThankYous[thankyou, 1], Globals.ThankYous[thankyou, 0], MessageBoxButton.OK, MessageBoxImage.Information);
         }
         #endregion
 

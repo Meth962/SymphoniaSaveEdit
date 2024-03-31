@@ -105,7 +105,7 @@ namespace SymphoniaSaveEdit.SaveObj
                 //br.BaseStream.Seek(0x2e, SeekOrigin.Current);
                 //seek 0x0f, read 5 tech mask bytes
                 br.BaseStream.Seek(0x17, SeekOrigin.Current);
-                save.Characters[i].Techs = ReverseBytes(br.ReadBytes(5)).ToBoolArray();
+                save.Characters[i].Techs = ReverseBytes(br.ReadBytes(5)).ToBoolArrayLow();
 
                 br.BaseStream.Seek(0x10, SeekOrigin.Current);
                 for (int t = 0; t < save.Characters[i].TechUses.Length; t++)

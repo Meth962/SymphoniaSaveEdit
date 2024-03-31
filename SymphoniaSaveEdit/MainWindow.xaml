@@ -1,14 +1,15 @@
-﻿<Window x:Class="SymphoniaSaveEdit.MainWindow"
+﻿<Window
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:av="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="av" x:Class="SymphoniaSaveEdit.MainWindow"
         Title="Symphonia Save Edit" Height="538.376" Width="838.023" Icon="{x:Null}" Loaded="Window_Loaded">
     <Grid  Background="#153438">
         <Button x:Name="btnOpen" Style="{StaticResource ButtonStyle}" Content="Open" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="75" Click="btnOpen_Click" Height="22"/>
         <ComboBox x:Name="cbxSaves" Style="{StaticResource ComboStyle}" HorizontalAlignment="Left" Margin="90,10,0,0" VerticalAlignment="Top" Width="228" SelectionChanged="cbxSaves_SelectionChanged"/>
         <Label x:Name="lblTotal" Style="{StaticResource LabelStyle}" Content="" HorizontalAlignment="Left" Margin="214,32,0,0" VerticalAlignment="Top" Width="282" Height="26" HorizontalContentAlignment="Right"/>
         <Label x:Name="lblLastModified" Style="{StaticResource LabelStyle}" HorizontalAlignment="Left" Margin="12,32,0,0" VerticalAlignment="Top" Width="197" Height="26"/>
-        <ProgressBar Height="26" HorizontalAlignment="Left" Margin="501,32,0,0" Name="pbTotal" VerticalAlignment="Top" Width="100" Maximum="270" Visibility="Hidden" />
-        <TabControl Background="Transparent" Margin="276,63,14,10" SelectionChanged="TabControl_SelectionChanged" Name="tabControl">
+        <ProgressBar Height="26" HorizontalAlignment="Left" Margin="501,32,0,0" x:Name="pbTotal" VerticalAlignment="Top" Width="100" Maximum="270" Visibility="Hidden" />
+        <TabControl Background="Transparent" Margin="276,63,14,10" SelectionChanged="TabControl_SelectionChanged" x:Name="tabControl">
             <TabItem Header="Party" Style="{StaticResource TabItemStyle}">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -26,16 +27,15 @@
                         <ComboBoxItem Content="Regal"/>
                         <ComboBoxItem Content="Kratos"/>
                     </ComboBox>
-                    <TextBox Style="{StaticResource TextBoxStyle}" BorderThickness="1" Name="tbxStats" Text="" Margin="10,32,221.5,9" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" AllowDrop="False" IsReadOnlyCaretVisible="True" IsReadOnly="True" Grid.ColumnSpan="2"/>
-                    <ListBox x:Name="lbxTitles" Style="{StaticResource ListBoxStyle}" Height="157" Margin="0,32,10.5,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="206" Grid.Column="1">
-                    </ListBox>
+                    <TextBox Style="{StaticResource TextBoxStyle}" BorderThickness="1" x:Name="tbxStats" Text="" Margin="10,32,221.5,9" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" AllowDrop="False" IsReadOnlyCaretVisible="True" IsReadOnly="True" Grid.ColumnSpan="2"/>
+                    <ListBox x:Name="lbxTitles" Style="{StaticResource ListBoxStyle}" Height="157" Margin="0,32,10.5,0" VerticalAlignment="Top" HorizontalAlignment="Right" Width="206" Grid.Column="1"/>
                     <Label Style="{StaticResource LabelStyle}" Content="Titles:" Margin="0,5,166.5,0" VerticalAlignment="Top" RenderTransformOrigin="0.545,-0.122" HorizontalAlignment="Right" Width="50" Grid.Column="1"/>
                     <Label Style="{StaticResource LabelStyle}" Content="Techs:" Margin="0,194,166.5,0" VerticalAlignment="Top" RenderTransformOrigin="0.545,-0.122" HorizontalAlignment="Right" Width="50" Grid.Column="1"/>
                     <ListBox x:Name="lbxTechs" Style="{StaticResource ListBoxStyle}" Margin="0,221,10.5,10" HorizontalAlignment="Right" Width="206" Grid.Column="1"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Treasure" Style="{StaticResource TabItemStyle}">
-                <ListBox Name="lbxTreasures" Style="{StaticResource ListBoxStyle}" Margin="0,0,-1,0" />
+                <ListBox x:Name="lbxTreasures" Style="{StaticResource ListBoxStyle}" Margin="0,0,-1,0" />
             </TabItem>
             <TabItem Header="Gigolo" Style="{StaticResource TabItemStyle}">
                 <ListBox x:Name="lbxWomen" Style="{StaticResource ListBoxStyle}" Margin="0,0,-1,-2" />
@@ -50,30 +50,30 @@
                         <ColumnDefinition Width="46*"/>
                         <ColumnDefinition Width="49*"/>
                     </Grid.ColumnDefinitions>
-                    <ListBox Margin="6,0,10,30" Style="{StaticResource ListBoxStyle}" Name="lbxItems" Grid.ColumnSpan="3" SelectionChanged="lbxItems_SelectionChanged" />
+                    <ListBox Margin="6,0,10,30" Style="{StaticResource ListBoxStyle}" x:Name="lbxItems" Grid.ColumnSpan="3" SelectionChanged="lbxItems_SelectionChanged" />
                     <Slider x:Name="sldItemQty" Margin="10,0,10,4" Grid.ColumnSpan="3" Maximum="99" ValueChanged="sldItemQty_ValueChanged" Height="22" VerticalAlignment="Bottom"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Cheats" Style="{StaticResource TabItemStyle}">
                 <Grid>
-                    <Button Name="btnMaxGald" Style="{StaticResource ButtonStyle}" Content="Max Gald" Margin="10,10,0,0" Width="115" Height="35" HorizontalAlignment="Left" VerticalAlignment="Top" Click="btnMaxGald_Click"/>
-                    <Label Name="lblMaxGald" Style="{StaticResource LabelStyle}" Content="" Margin="125,10,0,283"/>
-                    <Button Name="btnMaxStats" Style="{StaticResource ButtonStyle}" Content="Max Stats" Width="115" Height="35" Margin="10,50,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Click="btnMaxStats_Click"/>
-                    <Label Name="lblMaxStats" Style="{StaticResource LabelStyle}" Content="" Margin="125,50,0,0" Height="35" VerticalAlignment="Top"/>
-                    <Button Name="btnMaxGrade" Style="{StaticResource ButtonStyle}" Content="Max Grade" Width="115" Margin="10,90,0,0" Height="35" VerticalAlignment="Top" HorizontalAlignment="Left" Click="btnMaxGrade_Click"/>
-                    <Label Name="lblMaxGrade" Style="{StaticResource LabelStyle}" Content="" Margin="125,90,0,0" Height="35" VerticalAlignment="Top"/>
-                    <Button Name="btnMaxItems" Style="{StaticResource ButtonStyle}" Content="Max Items" Width="115" Margin="10,130,0,0" Height="35" VerticalAlignment="Top" HorizontalAlignment="Left" Click="btnMaxItems_Click"/>
-                    <Label Name="lblMaxItems" Style="{StaticResource LabelStyle}" Content="" Margin="125,130,0,0" Height="35" VerticalAlignment="Top"/>
-                    <Button Name="btnMaxTechs" Style="{StaticResource ButtonStyle}" Content="Max Techs" Width="115" Margin="10,170,0,0" Height="35" VerticalAlignment="Top" HorizontalAlignment="Left" Click="btnMaxTechs_Click"/>
-                    <Label Name="lblMaxTechs" Style="{StaticResource LabelStyle}" Content="" Margin="125,170,0,0" Height="35" VerticalAlignment="Top"/>
-                    <Button Name="btnAllTitles" Style="{StaticResource ButtonStyle}" Content="All Titles" Width="115" Margin="10,210,0,0" Height="35" VerticalAlignment="Top" HorizontalAlignment="Left" Click="btnAllTitles_Click"/>
-                    <Label Name="lblAllTitles" Style="{StaticResource LabelStyle}" Content="" Margin="125,210,0,0" Height="35" VerticalAlignment="Top"/>
-                    <Button Name="btnAllTechs" Style="{StaticResource ButtonStyle}" Content="All Techs" Width="115" Margin="10,250,0,0" Height="35" VerticalAlignment="Top" HorizontalAlignment="Left" Click="btnAllTechs_Click"/>
-                    <Label Name="lblAllTechs" Style="{StaticResource LabelStyle}" Content="" Margin="125,250,0,0" Height="35" VerticalAlignment="Top"/>
-                    <Button Name="btnMaxCooking" Style="{StaticResource ButtonStyle}" Content="Max Cooking" Width="115" Margin="10,290,0,0" Height="35" VerticalAlignment="Top" HorizontalAlignment="Left" Click="btnMaxCooking_Click"/>
-                    <Label Name="lblMaxCooking" Style="{StaticResource LabelStyle}" Content="" Margin="125,290,0,0" Height="35" VerticalAlignment="Top"/>
-                    <Button Name="btnFixChecksum" Style="{StaticResource ButtonStyle}" Content="Fix Checksum" Width="115" Margin="10,330,0,0" Height="35" VerticalAlignment="Top" HorizontalAlignment="Left" Click="btnFixChecksum_Click"/>
-                    <Label Name="lblFixChecksum" Style="{StaticResource LabelStyle}" Content="" Margin="125,330,0,0" Height="35" VerticalAlignment="Top"/>
+                    <Button x:Name="btnMaxGald" Style="{StaticResource ButtonStyle}" Content="Max Gald" Margin="10,10,0,0" Width="115" Height="35" HorizontalAlignment="Left" VerticalAlignment="Top" Click="btnMaxGald_Click"/>
+                    <Label x:Name="lblMaxGald" Style="{StaticResource LabelStyle}" Content="" Margin="125,10,0,283"/>
+                    <Button x:Name="btnMaxStats" Style="{StaticResource ButtonStyle}" Content="Max Stats" Width="115" Height="35" Margin="10,50,0,0" HorizontalAlignment="Left" VerticalAlignment="Top" Click="btnMaxStats_Click"/>
+                    <Label x:Name="lblMaxStats" Style="{StaticResource LabelStyle}" Content="" Margin="125,50,0,0" Height="35" VerticalAlignment="Top"/>
+                    <Button x:Name="btnMaxGrade" Style="{StaticResource ButtonStyle}" Content="Max Grade" Width="115" Margin="10,90,0,0" Height="35" VerticalAlignment="Top" HorizontalAlignment="Left" Click="btnMaxGrade_Click"/>
+                    <Label x:Name="lblMaxGrade" Style="{StaticResource LabelStyle}" Content="" Margin="125,90,0,0" Height="35" VerticalAlignment="Top"/>
+                    <Button x:Name="btnMaxItems" Style="{StaticResource ButtonStyle}" Content="Max Items" Width="115" Margin="10,130,0,0" Height="35" VerticalAlignment="Top" HorizontalAlignment="Left" Click="btnMaxItems_Click"/>
+                    <Label x:Name="lblMaxItems" Style="{StaticResource LabelStyle}" Content="" Margin="125,130,0,0" Height="35" VerticalAlignment="Top"/>
+                    <Button x:Name="btnMaxTechs" Style="{StaticResource ButtonStyle}" Content="Max Techs" Width="115" Margin="10,170,0,0" Height="35" VerticalAlignment="Top" HorizontalAlignment="Left" Click="btnMaxTechs_Click"/>
+                    <Label x:Name="lblMaxTechs" Style="{StaticResource LabelStyle}" Content="" Margin="125,170,0,0" Height="35" VerticalAlignment="Top"/>
+                    <Button x:Name="btnAllTitles" Style="{StaticResource ButtonStyle}" Content="All Titles" Width="115" Margin="10,210,0,0" Height="35" VerticalAlignment="Top" HorizontalAlignment="Left" Click="btnAllTitles_Click"/>
+                    <Label x:Name="lblAllTitles" Style="{StaticResource LabelStyle}" Content="" Margin="125,210,0,0" Height="35" VerticalAlignment="Top"/>
+                    <Button x:Name="btnAllTechs" Style="{StaticResource ButtonStyle}" Content="All Techs" Width="115" Margin="10,250,0,0" Height="35" VerticalAlignment="Top" HorizontalAlignment="Left" Click="btnAllTechs_Click"/>
+                    <Label x:Name="lblAllTechs" Style="{StaticResource LabelStyle}" Content="" Margin="125,250,0,0" Height="35" VerticalAlignment="Top"/>
+                    <Button x:Name="btnMaxCooking" Style="{StaticResource ButtonStyle}" Content="Max Cooking" Width="115" Margin="10,290,0,0" Height="35" VerticalAlignment="Top" HorizontalAlignment="Left" Click="btnMaxCooking_Click"/>
+                    <Label x:Name="lblMaxCooking" Style="{StaticResource LabelStyle}" Content="" Margin="125,290,0,0" Height="35" VerticalAlignment="Top"/>
+                    <Button x:Name="btnFixChecksum" Style="{StaticResource ButtonStyle}" Content="Fix Checksum" Width="115" Margin="10,330,0,0" Height="35" VerticalAlignment="Top" HorizontalAlignment="Left" Click="btnFixChecksum_Click"/>
+                    <Label x:Name="lblFixChecksum" Style="{StaticResource LabelStyle}" Content="" Margin="125,330,0,0" Height="35" VerticalAlignment="Top"/>
                 </Grid>
             </TabItem>
             <TabItem Header="Manual Edit" Style="{StaticResource TabItemStyle}">
@@ -82,13 +82,14 @@
                         <ColumnDefinition Width="41*"/>
                         <ColumnDefinition Width="8*"/>
                     </Grid.ColumnDefinitions>
-                    <TextBox Name="tbxJSON" Style="{StaticResource TextBoxStyle}" BorderThickness="1"  Margin="10,10,10,36" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.ColumnSpan="2"/>
-                    <Button Name="btnSaveEdit" Style="{StaticResource ButtonStyle}" Margin="10,0,10,5" Content="Save" Click="btnSaveEdit_Click" Height="26" VerticalAlignment="Bottom" Grid.ColumnSpan="2"/>
+                    <TextBox x:Name="tbxJSON" Style="{StaticResource TextBoxStyle}" BorderThickness="1"  Margin="10,10,10,36" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Grid.ColumnSpan="2"/>
+                    <Button x:Name="btnSaveEdit" Style="{StaticResource ButtonStyle}" Margin="10,0,10,5" Content="Save" Click="btnSaveEdit_Click" Height="26" VerticalAlignment="Bottom" Grid.ColumnSpan="2"/>
                 </Grid>
             </TabItem>
         </TabControl>
-        <TextBox Text="Test" Style="{StaticResource TextBoxStyle}" BorderThickness="1" HorizontalScrollBarVisibility="Auto" Margin="10,90,0,10" Name="lblInfo" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Left" Width="261" IsReadOnly="True"/>
+        <TextBox Text="-N/A-" Style="{StaticResource TextBoxStyle}" BorderThickness="1" HorizontalScrollBarVisibility="Auto" Margin="10,90,0,10" x:Name="lblInfo" VerticalScrollBarVisibility="Auto" HorizontalAlignment="Left" Width="261" IsReadOnly="True"/>
         <Label x:Name="lblChecksum" Style="{StaticResource LabelStyle}" Content="" HorizontalAlignment="Left" Margin="12,63,0,0" VerticalAlignment="Top" Width="212" Height="26" Foreground="Red" FontWeight="Bold"/>
         <Button x:Name="btnSave" Style="{StaticResource ButtonStyle}" Content="Save" Margin="0,10,14,0" VerticalAlignment="Top" Click="btnSave_Click" HorizontalAlignment="Right" Width="75" Height="22"/>
+        <Label x:Name="lblThankyou" Style="{StaticResource LabelStyle}" Content="" Cursor="Hand" HorizontalAlignment="Left" Margin="323,8,0,0" VerticalAlignment="Top" Width="282" Height="26" HorizontalContentAlignment="Right" MouseDown="lblThankyou_MouseDown"/>
     </Grid>
 </Window>

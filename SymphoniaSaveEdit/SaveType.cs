@@ -14,4 +14,17 @@ namespace SymphoniaSaveEdit
         PS4,
         GC
     }
+
+    public enum Party
+    {
+        Lloyd,
+        Collete,
+        Genis,
+        Raine,
+        Sheena,
+        Zelos,
+        Presea,
+        Regal,
+        Kratos
+    }
 }

@@ -20,6 +20,21 @@ namespace SymphoniaSaveEdit.Utils
             return bools.ToArray();
         }
 
+        public static bool[] ToBoolArrayLow(this byte[] bytes)
+        {
+            var bools = new List<bool>();
+
+            for (int b = 0; b < bytes.Length; b++)
+            {
+                for (int n = 0; n < 8; n++)
+                {
+                    bools.Add((bytes[b] & (byte)Math.Pow(2, n)) > 0);
+                }
+            }
+
+            return bools.ToArray();
+        }
+
         public static bool[] ToReversedBoolArray(this byte[] bytes)
         {
             var bools = new List<bool>();

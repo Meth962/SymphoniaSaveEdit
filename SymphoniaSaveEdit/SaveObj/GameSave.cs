@@ -83,26 +83,26 @@ namespace SymphoniaSaveEdit.SaveObj
                 Characters[i].Name = Globals.CharacterNames[i];
                 switch (i)
                 {
-                    case 0:
-                    case 2:
+                    case (int)SymphoniaSaveEdit.Party.Lloyd:
+                    case (int)SymphoniaSaveEdit.Party.Genis:
                         Characters[i].TechUses = new ushort[35];
                         break;
-                    case 1:
-                    case 3:
-                        Characters[i].TechUses = new ushort[25];
+                    case (int)SymphoniaSaveEdit.Party.Collete:
+                    case (int)SymphoniaSaveEdit.Party.Raine:
+                        Characters[i].TechUses = new ushort[31];
                         break;
-                    case 4:
+                    case (int)SymphoniaSaveEdit.Party.Sheena:
+                        Characters[i].TechUses = new ushort[36];
+                        break;
+                    case (int)SymphoniaSaveEdit.Party.Zelos:
                         Characters[i].TechUses = new ushort[29];
                         break;
-                    case 5:
-                    case 8:
+                    case (int)SymphoniaSaveEdit.Party.Kratos:
+                    case (int)SymphoniaSaveEdit.Party.Regal:
                         Characters[i].TechUses = new ushort[27];
                         break;
-                    case 6:
-                        Characters[i].TechUses = new ushort[20];
-                        break;
-                    case 7:
-                        Characters[i].TechUses = new ushort[22];
+                    case (int)SymphoniaSaveEdit.Party.Presea:
+                        Characters[i].TechUses = new ushort[25];
                         break;
                 }
             }

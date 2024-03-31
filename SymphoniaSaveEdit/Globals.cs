@@ -1,10 +1,16 @@
 ﻿using System.Collections.Generic;
+using System.Security.Policy;
 using System.Windows.Media;
 
 namespace SymphoniaSaveEdit
 {
     static class Globals
     {
+        public static string[,] ThankYous =
+        {
+            { "Special huge thanks to Noxbur!", "Huge thanks to Noxbur for working with me on the PS4 checksum. Also because of him, all the bugs for each platform were found.\r\nHe spent a ton of time exporting/importing/encrypting/decrypting saves for me to check hundreds of things.\r\nHe also helped organize game data into sheets so we could find discrepancies in the editor for all the platforms." }
+        };
+
         public static SolidColorBrush WhiteBrush = new SolidColorBrush(Color.FromRgb(255, 255, 255));
 
         public static List<string> TreasureNames = new List<string>()
@@ -3061,58 +3067,58 @@ namespace SymphoniaSaveEdit
         public static string[,] Techs = new string[9, 40]
         {
             { // Lloyd
-                "Heavy Tiger Blade","Tiger Rage","Tiger Blade","Demonic Circle","Demonic Chaos","Fierce Demon Fang","Double Demon Fang","Demon Fang",
-                "Sword Rain: Beta","Sonic Sword Rain","Sword Rain: Alpha","Sword Rain","Super Sonic Thrust","Hurricane Thrust","Sonic Thrust","Twin Tiger Blade",
-                "Final Justice","Rising Falcon","Hunting Beast","Raging Beast","Beast","Psi Tempest","Omega Tempest","Tempest",
-                "Beast Sword Rain","Raining Tiger Blade","Tempest Beast","Tempest Thrust","Demonic Tiger Blade","Demonic Thrust","Aurora Slash","Sonic Burst",
-                "","","","","","Falcon's Crest*","Holy Guardian*","Guardian",
+                "Demon Fang","Double Demon Fang","Fierce Demon Fang","Demonic Chaos","Demonic Circle","Tiger Blade","Tiger Rage","Heavy Tiger Blade",
+                "Twin Tiger Blade","Sonic Thrust","Hurricane Thrust","Super Sonic Thrust","Sword Rain","Sword Rain Alpha","Sonic Sword Rain","Sword Rain: Beta",
+                "Tempest","Omega Tempest","Psi Tempest","Beast","Raging Beast","Hunting Beast","Rising Falcon","",
+                "","Demonic Thrust","Demonic Tiger Blade","Tempest Thrust","Tempest Beast","Raining Tiger Blade","Beast Sword Rain","Sword Rain Tempest",
+                "Guardian","Falcon's Crest","","","","","",""
             },{ // Collete
-                "Hammer Rain","Pow Pow Hammer","Pow Hammer","Triple Ray Satellite","Ray Satellite","Triple Ray Thrust","Dual Ray Thrust","Ray Thrust",
-                "Item Thief","Listra*","Whirlwind Rush","Listra*","Ring Cyclone","Ring Whirlwind","Torrential Para Ball","Para Ball",
-                "Damage Guard","Final Fury*","Dancing Sickles*","Mirage Saber*","Stardust Cross","Grand Fall","Grand Chariot","Item Rover",
-                "","-????-*","Sephiroth*","Grand Cross*","Judgment","Sacrifice","Holy Song","Angel Feathers",
+                "Ray Thrust","Dual Ray Thrust","Triple Ray Thrust","Ray Satellite","Triple Ray Satellite","Pow Hammer","Pow Pow Hammer","Hammer Rain",
+                "Para Ball","Torrential Para Ball","Ring Whirlwind","Ring Cyclone","","Whirlwind Rush","","Item Thief",
+                "Item Rover","Grand Chariot","","Stardust Cross","","","","Damage Guard",
+                "Angel Feathers","Holy Song","Sacrifice","Judgement","Grand Cross","","-????-","",
                 "","","","","","","","",
             },{ // Genis
-                "Explosion","Flame Lance","Eruption","Fire Ball","Tidal Wave","Aqua Laser","Spread","Aqua Edge",
-                "Ground Dasher","Grave","Stalagmite","Stone Blast","Cyclone","Air Blade","Air Thrust","Wind Blade",
-                "Raging Mist","Freeze Lancer","Ice Tornado","Icicle","Indignation","Spark Wave","Thunder Blade","Lightning",
-                "Prism Sword","Earth Bite","Absolute","Atlas","Dreaded Wave","Thunder Arrow","Spiral Flare","Gravity Well",
-                "","","","Indignation Judg.*","Force Field","Tetraspell*","Divine Power*","Meteor Storm",
+                "Aqua Edge","Spread","Aqua Laser","Tidal Wave","Fire Ball","Eruption","","Explosion",
+                "Wind Blade","Air Thrust","Air Blade","Cyclone","Stone Blast","Stalagmite","Grave","Ground Dasher",
+                "Lightning","Thunder Blade","","Indignation","Icicle","Ice Tornado","Freeze Lancer","Raging Mist",
+                "Gravity Well","","","Dreaded Wave","Atlas","Absolute","","Prism Sword",
+                "Meteor Storm","Force Field","Indignation Judgement","","","","",""
             },{ // Raine
-                "Revive","Resurrection","Revitalize","Healing Circle","Nurse","Cure","Heal","First Aid",
-                "Acuteness","Sharpness","Anti-Magic","Nullify","Dispel","Restore","Purify","Recover",
-                "Holy Lance","Ray","Photon","Charge","Permaguard","Field Barrier","Barrier","Keenness",
-                "","","","Bloody Lance*","Dark Sphere*","Force Field","Sacred Light*","Magic Shell*",
+                "First Aid","","","Nurse","Healing Circle","Revitalize","Ressurection","",
+                "Recover","Purify","","Dispel","Nullify","","Sharpness","Acuteness", // nullify, blank might be reversed, need another save
+                "","Barrier","Field Barrier","","Charge","Photon","Ray","Holy Lance",
+                "Inspect Magic","Time Stop","Sacred Light","Force Field","Dark Sphere","Bloody Lance","Fairy Circle","",
                 "","","","","","","","",
             },{ // Sheena
-                "Mirage Seal","S. Seal Absolute","Serpent Seal Pinion","Serpent Seal","Power Seal Absolute","Power Seal Pinion","Power Seal","Pyre Seal",
-                "Cyclone Seal","Purgatory Seal","Demon Seal","Force Seal","Spirit Seal","Life Seal","M. Seal Absolute","Mirage Seal Pinion",
-                "S. Seal: Lightning","S. Seal: Ice","S. Seal: Earth","S. Seal: Light","S. Seal: Wind","S. Seal: Water","S. Seal: Fire","Guardian Seal",
-                "Summon: Ice","Summon: Earth","Summon: Light","Summon: Wind","Summon: Water","Summon: Fire","Summon: Corrine","T. Seal: Darkness",
-                "","","","Summon: Heart*","Summon: Birth","Summon: Origin","Summon: Darkness","Summon: Lightning",
+                "Pyre Seal","Power Seal","Power Seal Pinion","Power Seal Absolute","Serpent Seal","Serpent Seal Pinion","Serpent Seal Absolute","Mirage Seal",
+                "Mirage Seal Pinion","Mirage Seal Absolute","Life Seal","Spirit Seal","Force Seal","Demon Seal","Purgatory Seal","Cyclone Seal",
+                "Guardian Seal","S. Seal: Fire","S. Seal: Water","S. Seal: Wind","S. Seal: Light","T. Seal: Earth","T. Seal: Ice","T. Seal: Lightning",
+                "T. Seal: Darkness","","Summon: Fire","Summon: Water","Summon: Wind","Summon: Light","Summon: Earth","Summon: Ice",
+                "Summon: Lightning","Summon: Darkness","Summon: Origin","Summon: Birth","","","",""
             },{ // Zelos
-                "Victory Light Spear","Light spear","Super Sonic Thrust","Hurricane Thrust","Sonic Thrust","Fierce Demon Fange","Double Demon Fang","Demon Fang",
-                "Guardian","Eternal Chaos*","Spirit of the Earth*","Demon Spear","S. Lightning Blade","Lightning Blade","Hell Pyre","Light Spear Cannon",
-                "Thunder Blade","Lightning","Grave","Stone Blast","Air Thrust","Wind Blade","Eruption","Fire Ball",
-                "","","","Judgment","Gungnir*","Healing Wind","Healing Stream","First Aid",
+                "Demon Fang","Double Demon Fang","Fierce Demon Fang","Sonic Thrust","Hurricane Thrust","Super Sonic Thrust","Light Spear","Victory Light Spear",
+                "Light Spear Cannon","Hell Pyre","Lightning Blade","Super Lightning Blade","Demon Spear","Guardian","Fire Ball","Eruption",
+                "Wind Blade","Air Thrust","Stone Blast","Grave","Lightning","Thunder Blade","First Aid","Healing Stream",
+                "Healing Wind","","Judgement","Holy Binds","Divine Judgement","","","",
                 "","","","","","","","",
             },{ // Presea
-                "Rising Punishment","Dual Punishment","Punishment","Ultimate*","Fiery Destruction","Infinite Destruction","Deadly Destruction","Destruction",
-                "Finite Devastation","Devastation","Finality Infliction*","Resolute Infliction","Endless Infliction","Dual Infliction","Infliction","Finality Punishment",
-                "","Earthly Protection","Eternal Wind*","Beast","Eternal Damnation","Fiery Infliction","Eternal Devastation","Mass Devastation",
-                "","","","","","","","",
+                "Destruciton","Deadly Destruction","Infinite Destruction","Fiery Destruction","","Punishment","Dual Punishment","Rising Punishment", // fiery destruction / blank could be backwards, need another save
+                "Finality Punishment","Infliction","Dual Infliction","Endless Infliction","Resolute Infliction","","Devastation","Finite Devastation",
+                "Mass Devastation","Eternal Devastation","Fiery Infliction","Eternal Damnation","Beast","","Earthly Protection","Infernal Ruin",
+                "Crimson Devastation","","","","","","","",
                 "","","","","","","","",
             },{ // Regal
-                "Heel Kick*","Wolverine","Triple Kick","Spin Kick","Crescent Moon","Grand Healer","Chi Healer","Healer",
-                "Rising Dragon","Eagle Fall","Eagle Rage","Eagle Dive","Dragon Dance","Swallow Dance","Swallow Kick","Dragon Fang*",
-                "Dragon's Talon*","Heaven Rising*","Crescent Dark Moon","Dragon Strike*","Triple Rage Kick","Heaven's Charge","Dragon Rage","Dragon Fury",
-                "","","","","","Bastion","Mirage","Rage*",
+                "Healer","Chi Healer","Grand Healer","Crescent Moon","Spin Kick","Triple Kick","Wolverine","",
+                "","Swallow Kick","Swallow Dance","Dragon Dance","Eagle Dive","Eagle Rage","Eagle Fall","Rising Dragon",
+                "Dragon Fury","Dragon Rage","Heaven's Charge","Triple Rage Kick","Crescent Dark Moon","Heavy Rising","Dragon's Talon","Mirage",
+                "Force","Bastion","Fanged Finality","","","","","",
                 "","","","","","","","",
             },{ // Kratos
-                "Victory Light Spear","Light spear","Super Sonic Thrust","Hurricane Thrust","Sonic Thrust","Fierce Demon Fange","Double Demon Fang","Demon Fang",
-                "Guardian","Eternal Chaos*","Spirit of the Earth*","Demon Spear","S. Lightning Blade","Lightning Blade","Hell Pyre","Light Spear Cannon",
-                "Thunder Blade","Lightning","Grave","Stone Blast","Air Thrust","Wind Blade","Eruption","Fire Ball",
-                "","","","Judgment","Gungnir*","Healing Wind","Healing Stream","First Aid",
+                "Demon Fang","Double Demon Fang","Fierce Demon Fang","Sonic Thrust","Hurricane Thrust","Super Sonic Thrust","Light Spear","Victory Light Spear",
+                "Light Spear Cannon","Hell Pyre","Lightning Blade","Super Lightning Blade","Demon Spear","Guardian","Fire Ball","Eruption",
+                "Wind Blade","Air Thrust","Stone Blast","Grave","Lightning","Thunder Blade","First Aid","Healing Stream",
+                "Healing Wind","","Judgement","Holy Binds","Divine Judgement","","","",
                 "","","","","","","","",
             }
         };

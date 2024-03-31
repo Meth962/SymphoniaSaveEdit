@@ -153,7 +153,7 @@ namespace SymphoniaSaveEdit.SaveObj
                     save.Characters[i].Affection = ReverseUShort(br.ReadBytes(2));
                     //seek 0xf, read 5 tech mask bytes
                     br.BaseStream.Seek(0x17, SeekOrigin.Current);
-                    save.Characters[i].Techs = ReverseBytes(br.ReadBytes(5)).ToBoolArray();
+                    save.Characters[i].Techs = ReverseBytes(br.ReadBytes(5)).ToBoolArrayLow();
 
                     br.BaseStream.Seek(0x10, SeekOrigin.Current);
                     for (int t = 0; t < save.Characters[i].TechUses.Length; t++)
