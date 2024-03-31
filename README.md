@@ -6,7 +6,11 @@ This is a very old project that I built for myself. Enough people were asking ab
 Anything that is displayed by this program can also be changed. Some things are not in a field that is changeable but can be added at some point as requested. I simply wasn't changing those values and therefore left them as display only.
 
 ## History
-**v0.9.1** (3/30/2024): Tech fixup
+**v0.9.1** (3/31/2024): Item fixup
+* Fixed items according to PS4 save. Seems the itemIDs mostly line up on all versions.
+* Changed default extension on opening a file.
+
+**v0.9.1b** (3/30/2024): Tech fixup
 * Rewrote all techs to match PS4. Kratos was a complete guess as I don't have a save with him in it. A couple techs could still be off by one.
 * Added Thank You
 
