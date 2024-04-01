@@ -325,7 +325,7 @@ namespace SymphoniaSaveEdit
 
         private void SaveFile()
         {
-            if (save.Saves.Count == 0 || cbxSaves.SelectedIndex > save.Saves.Count - 1)
+            if (save == null || save.Saves.Count == 0 || cbxSaves.SelectedIndex > save.Saves.Count - 1)
                 return;
 
             SaveFileDialog svd = new SaveFileDialog();
@@ -415,9 +415,9 @@ namespace SymphoniaSaveEdit
                 }
                 else if (filename.ToLower().EndsWith(".dat"))
                 {
-                    if (ofd.FilterIndex == 1)
+                    if (ofd.FilterIndex == 2)
                         save = new SwitchSave(filename);
-                    else if (ofd.FilterIndex == 0)
+                    else if (ofd.FilterIndex == 1)
                         save = new PS4Save(filename);
                     else
                         save = new PCSave(filename);
@@ -479,7 +479,7 @@ namespace SymphoniaSaveEdit
 
         private void cbxStatChar_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (cbxStatChar.SelectedIndex < 0) return;
+            if (save == null || cbxStatChar.SelectedIndex < 0) return;
             UpdateCharStats(save.Saves[cbxSaves.SelectedIndex], cbxStatChar.SelectedIndex);
         }
 
@@ -518,6 +518,7 @@ namespace SymphoniaSaveEdit
 
         private void btnMaxGald_Click(object sender, RoutedEventArgs e)
         {
+            if (save == null) return;
             int i = cbxSaves.SelectedIndex;
             save.Saves[i].Gald = 999999;
             save.Saves[i].GaldCurrent = 999999;
@@ -529,6 +530,7 @@ namespace SymphoniaSaveEdit
 
         private void btnMaxStats_Click(object sender, RoutedEventArgs e)
         {
+            if (save == null) return;
             int i = cbxSaves.SelectedIndex;
             for (int c = 0; c < 9; c++)
             {
@@ -555,6 +557,7 @@ namespace SymphoniaSaveEdit
 
         private void btnMaxGrade_Click(object sender, RoutedEventArgs e)
         {
+            if (save == null) return;
             int i = cbxSaves.SelectedIndex;
             save.Saves[i].Grade = 9999.00;
             save.Saves[i].MaxGrade = 9999.00;
@@ -565,6 +568,7 @@ namespace SymphoniaSaveEdit
 
         private void btnMaxItems_Click(object sender, RoutedEventArgs e)
         {
+            if (save == null) return;
             int i = cbxSaves.SelectedIndex;
             //byte q = 1;
             for (int n = 0; n < save.Saves[i].Items.Length; n++)
@@ -585,6 +589,7 @@ namespace SymphoniaSaveEdit
 
         private void btnMaxTechs_Click(object sender, RoutedEventArgs e)
         {
+            if (save == null) return;
             int i = cbxSaves.SelectedIndex;
             for (int c = 0; c < 9; c++)
             {
@@ -599,6 +604,7 @@ namespace SymphoniaSaveEdit
 
         private void btnFixChecksum_Click(object sender, RoutedEventArgs e)
         {
+            if (save == null) return;
             if (save.saveType == SaveType.PCRaw || save.saveType == SaveType.PS3)
             {
                 MessageBox.Show("This game platform version doesn't use checksums in the save file.");
@@ -631,6 +637,7 @@ namespace SymphoniaSaveEdit
 
         private void btnAllTitles_Click(object sender, RoutedEventArgs e)
         {
+            if (save == null) return;
             int i = cbxSaves.SelectedIndex;
 
             save.Saves[i].Characters[0].Titles = new byte[] { 0xFE,0xD7,0xFF,0x7F}.ToBoolArray();
@@ -649,6 +656,7 @@ namespace SymphoniaSaveEdit
 
         private void btnAllTechs_Click(object sender, RoutedEventArgs e)
         {
+            if (save == null) return;
             int i = cbxSaves.SelectedIndex;
 
             save.Saves[i].Characters[0].Techs = new byte[]{0xFF,0xFF,0x7F,0xFE,0x03}.ToBoolArrayLow();
@@ -667,6 +675,7 @@ namespace SymphoniaSaveEdit
 
         private void btnMaxCooking_Click(object sender, RoutedEventArgs e)
         {
+            if (save == null) return;
             int i = cbxSaves.SelectedIndex;
 
             for (int n = 0; n < 9; n++)
@@ -683,12 +692,13 @@ namespace SymphoniaSaveEdit
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
+            if (save == null) return;
             SaveFile();
         }
 
         private void sldItemQty_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            if (codeControl)
+            if (save == null || codeControl)
                 return;
             int i = cbxSaves.SelectedIndex;
             save.Saves[i].Items[currentItem] = (byte)sldItemQty.Value;
@@ -706,7 +716,58 @@ namespace SymphoniaSaveEdit
             codeControl = false;
         }
 
-        private void lblThankyou_MouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        private void lbxTreasures_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var lbx = (ListBox)sender;
+            if (lbx.SelectedIndex < 0) return;
+
+            try
+            {
+                int idx = int.Parse(lbx.SelectedItem.ToString().Split(':')[0]);
+                GameSave s = save.Saves[cbxSaves.SelectedIndex];
+                s.Treasure[idx - 1] = true;
+
+                lbx.Items.RemoveAt(lbx.SelectedIndex);
+                UpdateSaveString(s);
+            }
+            catch { }
+        }
+
+        private void lbxGigolo_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var lbx = (ListBox)sender;
+            if (lbx.SelectedIndex < 0) return;
+
+            try
+            {
+                int idx = int.Parse(lbx.SelectedItem.ToString().Split(':')[0]);
+                GameSave s = save.Saves[cbxSaves.SelectedIndex];
+                s.Gigolo[idx - 1] = true;
+
+                lbx.Items.RemoveAt(lbx.SelectedIndex);
+                UpdateSaveString(s);
+            }
+            catch { }
+        }
+
+        private void lbxDogs_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            var lbx = (ListBox)sender;
+            if (lbx.SelectedIndex < 0) return;
+
+            try
+            {
+                int idx = int.Parse(lbx.SelectedItem.ToString().Split(':')[0]);
+                GameSave s = save.Saves[cbxSaves.SelectedIndex];
+                s.DogLover[idx - 1] = true;
+
+                lbx.Items.RemoveAt(lbx.SelectedIndex);
+                UpdateSaveString(s);
+            }
+            catch { }
+        }
+
+        private void lblThankyou_MouseDown(object sender, MouseButtonEventArgs e)
         {
             MessageBox.Show(Globals.ThankYous[thankyou, 1], Globals.ThankYous[thankyou, 0], MessageBoxButton.OK, MessageBoxImage.Information);
         }

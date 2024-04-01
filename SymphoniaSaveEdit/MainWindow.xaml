@@ -35,13 +35,13 @@
                 </Grid>
             </TabItem>
             <TabItem Header="Treasure" Style="{StaticResource TabItemStyle}">
-                <ListBox x:Name="lbxTreasures" Style="{StaticResource ListBoxStyle}" Margin="0,0,-1,0" />
+                <ListBox x:Name="lbxTreasures" Style="{StaticResource ListBoxStyle}" Margin="0,0,-1,0" MouseDoubleClick="lbxTreasures_MouseDoubleClick"/>
             </TabItem>
             <TabItem Header="Gigolo" Style="{StaticResource TabItemStyle}">
-                <ListBox x:Name="lbxWomen" Style="{StaticResource ListBoxStyle}" Margin="0,0,-1,-2" />
+                <ListBox x:Name="lbxWomen" Style="{StaticResource ListBoxStyle}" Margin="0,0,-1,-2" MouseDoubleClick="lbxGigolo_MouseDoubleClick"/>
             </TabItem>
             <TabItem Header="Dog Lover" Style="{StaticResource TabItemStyle}">
-                <ListBox x:Name="lbxDogs" Style="{StaticResource ListBoxStyle}" Margin="-5,0,0,4"/>
+                <ListBox x:Name="lbxDogs" Style="{StaticResource ListBoxStyle}" Margin="-5,0,0,4" MouseDoubleClick="lbxDogs_MouseDoubleClick"/>
             </TabItem>
             <TabItem Header="Items" Style="{StaticResource TabItemStyle}" Margin="-0,-0,-2,-1" Height="23" VerticalAlignment="Top">
                 <Grid Background="Transparent">
