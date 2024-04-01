@@ -3153,9 +3153,9 @@ namespace SymphoniaSaveEdit
                 "","","","","","","","",
             },{ // Kratos
                 "Demon Fang","Double Demon Fang","Fierce Demon Fang","Sonic Thrust","Hurricane Thrust","Super Sonic Thrust","Light Spear","Victory Light Spear",
-                "Light Spear Cannon","Hell Pyre","Lightning Blade","Super Lightning Blade","Demon Spear","Guardian","Fire Ball","Eruption",
-                "Wind Blade","Air Thrust","Stone Blast","Grave","Lightning","Thunder Blade","First Aid","Healing Stream",
-                "Healing Wind","","Judgement","Holy Binds","Divine Judgement","","","",
+                "Light Spear Cannon","Hell Pyre","Lightning Blade","Super Lightning Blade","","Demon Spear","Guardian","Fire Ball",
+                "Eruption","Wind Blade","Air Thrust","Stone Blast","Grave","Lightning","Thunder Blade","First Aid",
+                "Healing Stream","Healing Wind","","Judgement","Holy Binds","Divine Judgement","","",
                 "","","","","","","","",
             }
         };

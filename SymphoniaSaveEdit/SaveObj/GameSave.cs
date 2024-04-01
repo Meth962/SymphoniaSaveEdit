@@ -89,6 +89,7 @@ namespace SymphoniaSaveEdit.SaveObj
                         break;
                     case (int)SymphoniaSaveEdit.Party.Collete:
                     case (int)SymphoniaSaveEdit.Party.Raine:
+                    case (int)SymphoniaSaveEdit.Party.Kratos:
                         Characters[i].TechUses = new ushort[31];
                         break;
                     case (int)SymphoniaSaveEdit.Party.Sheena:
@@ -97,7 +98,6 @@ namespace SymphoniaSaveEdit.SaveObj
                     case (int)SymphoniaSaveEdit.Party.Zelos:
                         Characters[i].TechUses = new ushort[29];
                         break;
-                    case (int)SymphoniaSaveEdit.Party.Kratos:
                     case (int)SymphoniaSaveEdit.Party.Regal:
                         Characters[i].TechUses = new ushort[27];
                         break;
