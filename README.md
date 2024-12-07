@@ -32,7 +32,13 @@ remember to convert your number to hex.
 ## Thank Yous
 **Noxbur** - not only helped me get the PS4 version working, but you can thank him for this working for all game versions again. I abandoned this project long ago, but when I picked it up again, he was extremely helpful working with me. Testing saves, exporting, importing, encrypting, decrypting, every time I needed to check something on the Switch or PS4 version that I did not own. He also made spreadsheets for us to write down all the addresses for each version of the game, which was a huge help clearing up all the problems between each version.
 
+**dbustosm** - provided the large lists of max figurine, monster and collector books.
+
 ## History
+**v0.9.3** (12/7/2024): Max collector books and save settings
+* Recipe, figurine, and collector's book max button added thanks to user dbustosm.
+* Preferred save type and last used directory are now saved.
+  
 **v0.9.2** (4/1/2024): Kratos fixed
 * Kratos techs fixed up.
 * Added ability to double click on missing dog, treasure, or gigolo town to complete it.
