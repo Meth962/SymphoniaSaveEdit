@@ -74,6 +74,7 @@
     <Compile Include="SaveObj\SaveFile.cs" />
     <Compile Include="SaveObj\SwitchSave.cs" />
     <Compile Include="SaveType.cs" />
+    <Compile Include="Settings.cs" />
     <Compile Include="Utils\BinaryHelper.cs" />
     <Compile Include="Utils\Extensions.cs" />
     <Compile Include="Utils\JsonConverters.cs" />
