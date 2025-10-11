@@ -34,7 +34,12 @@ remember to convert your number to hex.
 
 **dbustosm** - provided the large lists of max figurine, monster and collector books.
 
+**EvilDude** - for letting me know the Japanese gameId was GTO and worked for them despite the different version.
+
 ## History
+**v0.9.4** (10/10/2024): Add Japan GC version support
+* Can now open Japanese GC saves instead of exiting.
+
 **v0.9.3** (12/7/2024): Max collector books and save settings
 * Recipe, figurine, and collector's book max button added thanks to user dbustosm.
 * Preferred save type and last used directory are now saved.
