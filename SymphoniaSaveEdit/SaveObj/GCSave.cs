@@ -14,7 +14,10 @@ namespace SymphoniaSaveEdit.SaveObj
 {
     internal class GCSave : SaveFile
     {
-        const string gameID = "GQS";
+        readonly string[] gameIDs = new string[2] { 
+            "GQS", // NA Release [GQSEAF] languages: D,E,F,I,P,S
+            "GTO"  // Japanese version [GTOJAF] テイルズ オブ シンフォニア
+        };
 
         int offset = 0;
 
@@ -38,7 +41,10 @@ namespace SymphoniaSaveEdit.SaveObj
 
             br.BaseStream.Seek(offset, SeekOrigin.Begin);
 
+            bool gameSaveFound = false;
+            var foundGameIds = new List<string>();
             bool regionPrompted = false;
+
             while (br.BaseStream.Position < br.BaseStream.Length)
             {
                 GameSave save = new GameSave(saveType);
@@ -46,12 +52,17 @@ namespace SymphoniaSaveEdit.SaveObj
                 string id = Encoding.Default.GetString(br.ReadBytes(3));
                 byte region = br.ReadByte();
 
-                if (id != gameID)
+                if (!gameIDs.Contains(id))
                 {
+                    // A different game save is found, add it to the list and move to the next
+                    if (!foundGameIds.Contains(id))
+                        foundGameIds.Add(id);
+
                     br.BaseStream.Seek(0x603f - 4, SeekOrigin.Current);
                     continue;
                 }
 
+                gameSaveFound = true;
                 if (region != 'E' && !regionPrompted)
                 {
                     var result = MessageBox.Show("This is untested for Europe and Japanese regions. Try it anyway?", "Region Mismatch", MessageBoxButton.YesNo);
@@ -287,6 +298,12 @@ namespace SymphoniaSaveEdit.SaveObj
             }
 
             br.Close();
+
+            if (!gameSaveFound)
+            {
+                MessageBox.Show($"Known GameIDs for Symphonia were not found on this save file.\r\n\r\nThe following GameIDs were found:\r\n\r\n{string.Join(", ", foundGameIds)}\r\n\r\nIf one of these is a legitimate Symphonia ID, submit a feature request on Github.",
+                    "Symphonia GameID Not Found");
+            }
         }
 
         public override void WriteSave(string filename, int slot = 0)
